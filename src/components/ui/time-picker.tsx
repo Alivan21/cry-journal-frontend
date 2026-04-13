@@ -320,7 +320,7 @@ function TimeWheelColumn({
         {label}
       </span>
       <div className="relative">
-        <div className="bg-accent pointer-events-none absolute inset-x-1 top-1/2 z-10 h-9 -translate-y-1/2 rounded-lg" />
+        <div className="bg-primary pointer-events-none absolute inset-x-1 top-1/2 z-10 h-8 -translate-y-1/2 rounded-lg" />
         <div
           aria-label={ariaLabel}
           className="relative snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-md [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -341,7 +341,7 @@ function TimeWheelColumn({
                   className={cn(
                     "relative z-20 flex h-9 w-full snap-center items-center justify-center rounded-lg px-2 text-sm font-medium tabular-nums transition-colors outline-none focus:outline-none focus-visible:outline-none",
                     isSelected
-                      ? "text-accent-foreground font-semibold"
+                      ? "text-primary-foreground font-semibold"
                       : "text-foreground/60 hover:text-foreground"
                   )}
                   key={String(option.value)}

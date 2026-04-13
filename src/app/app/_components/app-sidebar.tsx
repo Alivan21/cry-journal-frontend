@@ -27,6 +27,7 @@ import type { AppContainerUser } from "./app-container";
 import { APP_NAV_SECTIONS } from "../_constant/sidebar-items";
 
 import { AppProfileMenu } from "./app-profile-menu";
+import { ModeToggle } from "./app-toogle-theme";
 
 const DEFAULT_BRAND_NAME = "Crimson";
 
@@ -335,13 +336,16 @@ export function AppSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-sidebar-border/80 border-t px-3 pb-4">
-        <div className="pb-3 md:hidden">
-          <AppProfileMenu
-            contentAlign="start"
-            triggerClassName="w-full justify-start border-sidebar-border/80 shadow-none"
-            user={user}
-          />
+      <SidebarFooter className="border-sidebar-border/80 border-t px-3 py-4">
+        <div className="md:hidden flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <AppProfileMenu
+              contentAlign="start"
+              triggerClassName="w-full justify-start border-sidebar-border/80 shadow-none"
+              user={user}
+            />
+          </div>
+          <ModeToggle />
         </div>
         <SidebarMenu className="gap-1">
           {footerLinks.map((item) => {

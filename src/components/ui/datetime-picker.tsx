@@ -206,7 +206,7 @@ function DateTimePicker({
         <Button
           aria-label={displayValue}
           className={cn(
-            "w-full justify-between gap-2 text-left font-normal",
+            "h-9 w-full justify-between gap-2 text-left font-normal",
             !selectedValue && "text-muted-foreground",
             className
           )}
