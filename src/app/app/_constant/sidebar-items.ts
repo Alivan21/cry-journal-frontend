@@ -1,12 +1,4 @@
-import {
-  ArrowLeftRight,
-  CreditCard,
-  FileText,
-  Landmark,
-  LayoutDashboard,
-  Sparkles,
-  Wallet,
-} from "lucide-react";
+import { Home, Wallet, SquareChartGantt, Zap, NotebookPen } from "lucide-react";
 import { ROUTES } from "@/common/constant/routes";
 import type { AppSidebarSection } from "../_components/app-sidebar";
 
@@ -17,59 +9,32 @@ export const APP_NAV_SECTIONS: AppSidebarSection[] = [
       {
         title: "Dashboard",
         path: ROUTES.PROTECTED.DASHBOARD,
-        icon: LayoutDashboard,
-      },
-      {
-        title: "Payment",
-        path: "/app/payments",
-        icon: Wallet,
-      },
-      {
-        title: "Transaction",
-        path: "/app/transactions",
-        icon: ArrowLeftRight,
-      },
-      {
-        title: "Cards",
-        icon: CreditCard,
-        children: [
-          {
-            title: "Virtual Cards adkjwakdjwakjdka",
-            path: "/app/cards/virtual",
-            icon: CreditCard,
-          },
-          {
-            title: "Physical Cards",
-            path: "/app/cards/physical",
-            icon: CreditCard,
-          },
-        ],
+        icon: Home,
       },
     ],
   },
   {
-    label: "Support",
+    label: "Trading",
     items: [
       {
-        title: "Capital",
+        title: "Account",
         path: "/app/capital",
-        icon: Landmark,
+        icon: Wallet,
       },
       {
-        title: "Vaults",
+        title: "Strategies",
         path: "/app/vaults",
-        icon: CreditCard,
+        icon: SquareChartGantt,
       },
       {
-        title: "Reports",
+        title: "Demon Hunter",
         path: "/app/reports",
-        icon: FileText,
+        icon: Zap,
       },
       {
-        title: "Earn",
+        title: "Reflection Journal",
         path: "/app/earn",
-        icon: Sparkles,
-        badge: "€160",
+        icon: NotebookPen,
       },
     ],
   },

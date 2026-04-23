@@ -24,6 +24,8 @@ export type BreadcrumbsItem = {
   url?: string;
 };
 
+const EMPTY_ITEMS: BreadcrumbsItem[] = [];
+
 type BreadcrumbsProps = {
   items?: BreadcrumbsItem[];
   className?: string;
@@ -33,25 +35,31 @@ function BreadcrumbLabel({ children }: { children: React.ReactNode }) {
   return <span className="truncate">{children}</span>;
 }
 
-function renderBreadcrumbItem(item: BreadcrumbsItem, isCurrentPage: boolean) {
-  if (isCurrentPage || !item.url) {
+function BreadcrumbItemList({
+  item,
+  isCurrentPage,
+}: {
+  item: BreadcrumbsItem;
+  isCurrentPage: boolean;
+}) {
+  if (isCurrentPage || !item?.url) {
     return (
       <BreadcrumbPage className="max-w-48 truncate">
-        <BreadcrumbLabel>{item.text}</BreadcrumbLabel>
+        <BreadcrumbLabel>{item?.text}</BreadcrumbLabel>
       </BreadcrumbPage>
     );
   }
 
   return (
     <BreadcrumbLink asChild className="max-w-48 truncate">
-      <Link to={item.url}>
+      <Link to={item?.url}>
         <BreadcrumbLabel>{item.text}</BreadcrumbLabel>
       </Link>
     </BreadcrumbLink>
   );
 }
 
-export function Breadcrumbs({ items = [], className }: BreadcrumbsProps) {
+export function Breadcrumbs({ items = EMPTY_ITEMS, className }: BreadcrumbsProps) {
   if (items.length === 0) {
     return null;
   }
@@ -67,7 +75,7 @@ export function Breadcrumbs({ items = [], className }: BreadcrumbsProps) {
         {shouldCollapse ? (
           <>
             <BreadcrumbItem className="min-w-0 shrink">
-              {renderBreadcrumbItem(firstItem, false)}
+              <BreadcrumbItemList isCurrentPage={false} item={firstItem} />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -84,13 +92,12 @@ export function Breadcrumbs({ items = [], className }: BreadcrumbsProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
-                  {middleItems.map((item, index) => (
-                    <DropdownMenuItem asChild={Boolean(item.url)} key={`${item.url ?? "item"}-${index}`}>
-                      {item.url ? (
-                        <Link to={item.url}>{item.text}</Link>
-                      ) : (
-                        <span>{item.text}</span>
-                      )}
+                  {middleItems.map((item) => (
+                    <DropdownMenuItem
+                      asChild={Boolean(item.url)}
+                      key={item.url}
+                    >
+                      {item.url ? <Link to={item.url}>{item.text}</Link> : <span>{item.text}</span>}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -98,7 +105,7 @@ export function Breadcrumbs({ items = [], className }: BreadcrumbsProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem className="min-w-0 shrink">
-              {renderBreadcrumbItem(lastItem, true)}
+              <BreadcrumbItemList isCurrentPage={true} item={lastItem} />
             </BreadcrumbItem>
           </>
         ) : (
@@ -106,9 +113,9 @@ export function Breadcrumbs({ items = [], className }: BreadcrumbsProps) {
             const isCurrentPage = index === items.length - 1;
 
             return (
-              <React.Fragment key={`${item.url ?? "item"}-${index}`}>
+              <React.Fragment key={item.url ?? "current-page"}>
                 <BreadcrumbItem className="min-w-0 shrink">
-                  {renderBreadcrumbItem(item, isCurrentPage)}
+                  <BreadcrumbItemList isCurrentPage={isCurrentPage} item={item} />
                 </BreadcrumbItem>
                 {!isCurrentPage ? <BreadcrumbSeparator /> : null}
               </React.Fragment>

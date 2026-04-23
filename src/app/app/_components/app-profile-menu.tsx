@@ -1,9 +1,9 @@
-import { ChevronDown, LogOut, Settings } from "lucide-react";
+import { ChevronDown, LogOut, Settings, type LucideIcon } from "lucide-react";
 import { Link } from "react-router";
 
 import { ROUTES } from "@/common/constant/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
 import { cn } from "@/libs/clsx";
 
 import type { AppContainerUser } from "./app-container";
+import type { VariantProps } from "class-variance-authority";
 
 function getInitials(name?: string) {
   if (!name) return "CR";
@@ -28,6 +29,29 @@ function getInitials(name?: string) {
 
   return initials || "CR";
 }
+
+type MenuItem = {
+  label: string;
+  icon: LucideIcon;
+  href?: string;
+  variant?: VariantProps<typeof buttonVariants>["variant"];
+  onClick?: () => void;
+};
+
+const MENU_ITEMS: MenuItem[] = [
+  {
+    label: "Settings",
+    icon: Settings,
+    href: ROUTES.PROTECTED.SETTINGS,
+  },
+
+  {
+    label: "Logout",
+    icon: LogOut,
+    variant: "destructive",
+    onClick: () => console.log("Mock logout action"),
+  },
+];
 
 export type AppProfileMenuProps = {
   user?: AppContainerUser;
@@ -71,20 +95,22 @@ export function AppProfileMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="flex flex-col gap-1">
-          <DropdownMenuItem asChild className="cursor-pointer">
-            <Link to={ROUTES.PROTECTED.SETTINGS}>
-              <Settings className="size-4" />
-              <span>Settings</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => console.log("Mock logout action")}
-            variant="destructive"
-          >
-            <LogOut className="size-4" />
-            <span>Logout</span>
-          </DropdownMenuItem>
+          {MENU_ITEMS.map((item) => (
+            <DropdownMenuItem
+              asChild
+              className="cursor-pointer border-0"
+              key={item.label}
+              variant={item.variant as "default" | "destructive"}
+            >
+              {item.href ? (
+                <Link to={item.href}>{item.label}</Link>
+              ) : (
+                <Button onClick={item.onClick} variant={item.variant}>
+                  {item.label}
+                </Button>
+              )}
+            </DropdownMenuItem>
+          ))}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

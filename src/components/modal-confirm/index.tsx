@@ -10,6 +10,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import type { ReactNode } from "react";
 
 type ModalConfirmProps = {
   open: boolean;
@@ -20,10 +21,10 @@ type ModalConfirmProps = {
   onCancel: () => void;
   confirmText: string;
   cancelText: string;
-  icon: React.ReactNode;
+  icon?: ReactNode;
 };
 
-export function ModalConfirm({
+export default function ModalConfirm({
   open,
   onOpenChange,
   title = "Are you sure?",
@@ -32,13 +33,15 @@ export function ModalConfirm({
   onCancel,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  icon = <AlertTriangle className="text-destructive" />,
+  icon,
 }: ModalConfirmProps) {
+  const resolvedIcon = icon ?? <AlertTriangle className="text-destructive" />;
+
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogMedia>{icon}</AlertDialogMedia>
+          <AlertDialogMedia>{resolvedIcon}</AlertDialogMedia>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>

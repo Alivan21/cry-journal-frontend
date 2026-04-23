@@ -1,4 +1,10 @@
-import { ChevronDown, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  SquareChartGantt,
+  type LucideIcon,
+} from "lucide-react";
 import * as React from "react";
 import { Link, useLocation } from "react-router";
 
@@ -29,7 +35,7 @@ import { APP_NAV_SECTIONS } from "../_constant/sidebar-items";
 import { AppProfileMenu } from "./app-profile-menu";
 import { ModeToggle } from "./app-toogle-theme";
 
-const DEFAULT_BRAND_NAME = "Crimson";
+const DEFAULT_BRAND_NAME = "Cry Journal";
 
 type AppSidebarLeafRoute = {
   title: string;
@@ -54,6 +60,8 @@ export type AppSidebarSection = {
 };
 
 export type AppSidebarFooterLink = AppSidebarLeafRoute;
+
+const EMPTY_FOOTER_LINKS: AppSidebarFooterLink[] = [];
 
 export type AppSidebarProps = {
   navSections?: AppSidebarSection[];
@@ -193,17 +201,12 @@ function SidebarCollapsibleItem({
 }) {
   const { state } = useSidebar();
   const hasActiveChild = item.children.some((child) => pathname === child.path);
-  const [open, setOpen] = React.useState(hasActiveChild);
-
-  React.useEffect(() => {
-    if (hasActiveChild) {
-      setOpen(true);
-    }
-  }, [hasActiveChild]);
+  const [manuallyOpen, setManuallyOpen] = React.useState(false);
+  const open = hasActiveChild || manuallyOpen;
 
   return (
     <SidebarMenuItem>
-      <Collapsible onOpenChange={setOpen} open={open}>
+      <Collapsible onOpenChange={setManuallyOpen} open={open}>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton
             className="text-sidebar-foreground/85 hover:text-sidebar-foreground h-11 rounded-xl px-3 text-sm font-medium transition-all"
@@ -281,7 +284,7 @@ function SidebarHeaderToggle() {
 
 export function AppSidebar({
   navSections = APP_NAV_SECTIONS,
-  footerLinks = [],
+  footerLinks = EMPTY_FOOTER_LINKS,
   brandName = DEFAULT_BRAND_NAME,
   user,
 }: AppSidebarProps) {
@@ -298,12 +301,9 @@ export function AppSidebar({
           </div>
         ) : (
           <div className="flex items-center justify-between gap-3">
-            <Link className="flex min-w-0 items-center gap-3" to={ROUTES.PROTECTED.DASHBOARD}>
-              <div className="bg-muted text-primary grid size-9 shrink-0 grid-cols-2 gap-1 rounded-2xl p-1.5">
-                <span className="rounded-full bg-current opacity-90" />
-                <span className="rounded-full bg-current opacity-70" />
-                <span className="rounded-full bg-current opacity-70" />
-                <span className="rounded-full bg-current opacity-90" />
+            <Link className="flex min-w-0 items-center gap-2" to={ROUTES.PROTECTED.DASHBOARD}>
+              <div className="bg-primary/10 flex size-9 items-center justify-center rounded-full">
+                <SquareChartGantt className="text-primary" />
               </div>
               <div className="min-w-0">
                 <p className="truncate text-[1.05rem] font-semibold tracking-tight">{brandName}</p>
@@ -337,7 +337,7 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter className="border-sidebar-border/80 border-t px-3 py-4">
-        <div className="md:hidden flex items-center gap-2">
+        <div className="flex items-center gap-2 md:hidden">
           <div className="min-w-0 flex-1">
             <AppProfileMenu
               contentAlign="start"

@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import { ThemeProvider } from "./components/providers/theme-provider.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
-import { createRoutesFromFiles } from "./libs/react-router/index.ts";
+import { createRoutesFromFiles } from "./libs/react-router/create-routes.ts";
 import { queryClient } from "./libs/tanstack-query/query-client.ts";
 import "./index.css";
 

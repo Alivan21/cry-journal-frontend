@@ -12,7 +12,6 @@ export default function Page() {
       description="Track activity and review the latest updates from your workspace."
       title="Dashboard"
     >
-      <span>DashboardPage</span>
       <DateTimePicker />
       <TimePicker />
     </AppShell>
