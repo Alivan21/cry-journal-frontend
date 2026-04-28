@@ -1,9 +1,9 @@
-import { ChevronDown, LogOut, Settings, type LucideIcon } from "lucide-react";
+import { ChevronDown, LogOut, Settings } from "lucide-react";
 import { Link } from "react-router";
 
 import { ROUTES } from "@/common/constant/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/libs/clsx";
 
-import type { AppContainerUser } from "./app-container";
-import type { VariantProps } from "class-variance-authority";
+import type { AppProfileMenuItem, AppProfileMenuProps } from "./type";
 
 function getInitials(name?: string) {
   if (!name) return "CR";
@@ -30,15 +29,7 @@ function getInitials(name?: string) {
   return initials || "CR";
 }
 
-type MenuItem = {
-  label: string;
-  icon: LucideIcon;
-  href?: string;
-  variant?: VariantProps<typeof buttonVariants>["variant"];
-  onClick?: () => void;
-};
-
-const MENU_ITEMS: MenuItem[] = [
+const MENU_ITEMS: AppProfileMenuItem[] = [
   {
     label: "Settings",
     icon: Settings,
@@ -52,12 +43,6 @@ const MENU_ITEMS: MenuItem[] = [
     onClick: () => console.log("Mock logout action"),
   },
 ];
-
-export type AppProfileMenuProps = {
-  user?: AppContainerUser;
-  triggerClassName?: string;
-  contentAlign?: "start" | "end" | "center";
-};
 
 export function AppProfileMenu({
   user,
@@ -94,7 +79,7 @@ export function AppProfileMenu({
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           {MENU_ITEMS.map((item) => (
             <DropdownMenuItem
               asChild

@@ -1,6 +1,8 @@
 import { Home, Wallet, SquareChartGantt, Zap, NotebookPen } from "lucide-react";
 import { ROUTES } from "@/common/constant/routes";
-import type { AppSidebarSection } from "../_components/app-sidebar";
+import type { AppSidebarFooterLink, AppSidebarSection } from "../_components/type";
+
+export const DEFAULT_BRAND_NAME = "Cry Journal";
 
 export const APP_NAV_SECTIONS: AppSidebarSection[] = [
   {
@@ -39,3 +41,5 @@ export const APP_NAV_SECTIONS: AppSidebarSection[] = [
     ],
   },
 ];
+
+export const EMPTY_FOOTER_LINKS: AppSidebarFooterLink[] = [];

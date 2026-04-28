@@ -2,27 +2,13 @@
 
 import * as React from "react";
 
-import type { BreadcrumbsItem } from "@/components/breadcrumbs";
-
-export type AppPageMeta = {
-  breadcrumbs?: BreadcrumbsItem[];
-  title?: string;
-  description?: string;
-  action?: React.ReactNode;
-};
-
-type AppPageMetaState = {
-  breadcrumbs: BreadcrumbsItem[];
-  title?: string;
-  description?: string;
-  action?: React.ReactNode;
-};
-
-type AppPageMetaContextValue = {
-  meta: AppPageMetaState;
-  setMeta: (meta: AppPageMeta) => void;
-  clearMeta: () => void;
-};
+import type {
+  AppPageMeta,
+  AppPageMetaContextValue,
+  AppPageMetaProviderProps,
+  AppPageMetaState,
+  AppShellProps,
+} from "./type";
 
 const EMPTY_PAGE_META: AppPageMetaState = {
   breadcrumbs: [],
@@ -43,7 +29,7 @@ function normalizeMeta(meta?: AppPageMeta | null): AppPageMetaState {
   };
 }
 
-export function AppPageMetaProvider({ children }: { children: React.ReactNode }) {
+export function AppPageMetaProvider({ children }: AppPageMetaProviderProps) {
   const [meta, setMetaState] = React.useState<AppPageMetaState>(EMPTY_PAGE_META);
 
   const setMeta = React.useCallback((value: AppPageMeta) => {
@@ -75,10 +61,6 @@ function useAppPageMetaContext() {
 
   return context;
 }
-
-type AppShellProps = AppPageMeta & {
-  children: React.ReactNode;
-};
 
 export function AppShell({
   action,

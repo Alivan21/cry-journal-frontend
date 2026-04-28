@@ -1,10 +1,4 @@
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  SquareChartGantt,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, SquareChartGantt } from "lucide-react";
 import * as React from "react";
 import { Link, matchPath, NavLink, useLocation, useMatch } from "react-router";
 
@@ -29,52 +23,30 @@ import {
 } from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/libs/clsx";
-import type { AppContainerUser } from "./app-container";
-import { APP_NAV_SECTIONS } from "../_constant/sidebar-items";
+import type {
+  AppSidebarParentRoute,
+  AppSidebarProps,
+  AppSidebarRoute,
+  EllipsisTooltipProps,
+  FooterLinkItemProps,
+  NavBadgeProps,
+  SidebarCollapsibleItemProps,
+  SidebarLeafItemProps,
+} from "./type";
+import {
+  APP_NAV_SECTIONS,
+  DEFAULT_BRAND_NAME,
+  EMPTY_FOOTER_LINKS,
+} from "../_constant/sidebar-items";
 
 import { AppProfileMenu } from "./app-profile-menu";
 import { ModeToggle } from "./app-toogle-theme";
-
-const DEFAULT_BRAND_NAME = "Cry Journal";
-
-type AppSidebarLeafRoute = {
-  title: string;
-  path: string;
-  icon: LucideIcon;
-  badge?: string;
-};
-
-type AppSidebarParentRoute = {
-  title: string;
-  icon: LucideIcon;
-  badge?: string;
-  path?: string;
-  children: AppSidebarLeafRoute[];
-};
-
-type AppSidebarRoute = AppSidebarLeafRoute | AppSidebarParentRoute;
-
-export type AppSidebarSection = {
-  label: string;
-  items: AppSidebarRoute[];
-};
-
-export type AppSidebarFooterLink = AppSidebarLeafRoute;
-
-const EMPTY_FOOTER_LINKS: AppSidebarFooterLink[] = [];
-
-export type AppSidebarProps = {
-  navSections?: AppSidebarSection[];
-  footerLinks?: AppSidebarFooterLink[];
-  brandName?: string;
-  user?: AppContainerUser;
-};
 
 function hasChildren(route: AppSidebarRoute): route is AppSidebarParentRoute {
   return "children" in route && Array.isArray(route.children) && route.children.length > 0;
 }
 
-function NavBadge({ badge }: { badge?: string }) {
+function NavBadge({ badge }: NavBadgeProps) {
   if (!badge) return null;
 
   return (
@@ -97,15 +69,7 @@ function isTextOverflowing(el: HTMLElement): boolean {
   return el.scrollWidth > el.clientWidth + 1;
 }
 
-function EllipsisTooltip({
-  text,
-  className,
-  enabled = true,
-}: {
-  text: string;
-  className?: string;
-  enabled?: boolean;
-}) {
+function EllipsisTooltip({ text, className, enabled = true }: EllipsisTooltipProps) {
   const ref = React.useRef<HTMLSpanElement>(null);
   const [truncated, setTruncated] = React.useState(false);
 
@@ -156,10 +120,8 @@ function EllipsisTooltip({
   );
 }
 
-function SidebarLeafItem({ item }: { item: AppSidebarLeafRoute }) {
+function SidebarLeafItem({ item }: SidebarLeafItemProps) {
   const { state } = useSidebar();
-  // useMatch gives React Router's own interpretation of "active" (handles params,
-  // trailing slashes, etc.) rather than a raw string comparison.
   const isActive = Boolean(useMatch({ path: item.path, end: true }));
 
   return (
@@ -190,9 +152,8 @@ function SidebarLeafItem({ item }: { item: AppSidebarLeafRoute }) {
   );
 }
 
-function SidebarCollapsibleItem({ item }: { item: AppSidebarParentRoute }) {
+function SidebarCollapsibleItem({ item }: SidebarCollapsibleItemProps) {
   const { state } = useSidebar();
-  // matchPath is a plain utility (not a hook), safe to call inside .some() / .map()
   const { pathname } = useLocation();
   const hasActiveChild = item.children.some((child) =>
     Boolean(matchPath({ path: child.path, end: true }, pathname))
@@ -259,7 +220,7 @@ function SidebarCollapsibleItem({ item }: { item: AppSidebarParentRoute }) {
 }
 
 /** Footer navigation item — extracted so it can call `useMatch` as a hook. */
-function FooterLinkItem({ item }: { item: AppSidebarFooterLink }) {
+function FooterLinkItem({ item }: FooterLinkItemProps) {
   const isActive = Boolean(useMatch({ path: item.path, end: true }));
 
   return (
@@ -305,12 +266,7 @@ function SidebarHeaderToggle() {
   );
 }
 
-export function AppSidebar({
-  navSections = APP_NAV_SECTIONS,
-  footerLinks = EMPTY_FOOTER_LINKS,
-  brandName = DEFAULT_BRAND_NAME,
-  user,
-}: AppSidebarProps) {
+export function AppSidebar({ user }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
@@ -328,7 +284,9 @@ export function AppSidebar({
                 <SquareChartGantt className="text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="truncate text-[1.05rem] font-semibold tracking-tight">{brandName}</p>
+                <p className="truncate text-[1.05rem] font-semibold tracking-tight">
+                  {DEFAULT_BRAND_NAME}
+                </p>
               </div>
             </Link>
 
@@ -338,7 +296,7 @@ export function AppSidebar({
       </SidebarHeader>
 
       <SidebarContent className="px-3 py-2">
-        {navSections.map((section) => (
+        {APP_NAV_SECTIONS.map((section) => (
           <SidebarGroup className="px-0" key={section.label}>
             <SidebarGroupLabel className="text-muted-foreground px-3 pb-2 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
               {section.label}
@@ -370,12 +328,12 @@ export function AppSidebar({
           <ModeToggle />
         </div>
         <SidebarMenu className="gap-1">
-          {footerLinks.map((item) => (
+          {EMPTY_FOOTER_LINKS.map((item) => (
             <FooterLinkItem item={item} key={item.path} />
           ))}
         </SidebarMenu>
         <p className="text-muted-foreground px-1 pt-3 text-center text-[0.68rem] group-data-[collapsible=icon]:hidden">
-          © {new Date().getFullYear()} {brandName}. Inc
+          © {new Date().getFullYear()} {DEFAULT_BRAND_NAME}. Inc
         </p>
       </SidebarFooter>
     </Sidebar>

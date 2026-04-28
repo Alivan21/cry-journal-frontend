@@ -4,27 +4,12 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/libs/clsx";
-import type { ReactNode } from "react";
 
+import type { AppContainerProps } from "./type";
 import { AppPageMetaProvider, useAppPageMetaValue } from "./app-page-meta";
 import { AppProfileMenu } from "./app-profile-menu";
-import { AppSidebar, type AppSidebarProps, type AppSidebarSection } from "./app-sidebar";
+import { AppSidebar } from "./app-sidebar";
 import { ModeToggle } from "./app-toogle-theme";
-
-export type AppContainerUser = {
-  name?: string;
-  email?: string;
-  avatarSrc?: string;
-};
-
-export type AppContainerProps = {
-  children: ReactNode;
-  navSections?: AppSidebarSection[];
-  sidebarProps?: Omit<AppSidebarProps, "navSections" | "user">;
-  className?: string;
-  contentClassName?: string;
-  user?: AppContainerUser;
-};
 
 function AppContainerContent({
   children,
@@ -37,13 +22,9 @@ function AppContainerContent({
 
   return (
     <SidebarInset className="min-h-svh bg-transparent">
-      {/* Top-of-page progress bar shown while React Router loads the next route */}
       {isNavigating && (
-        <div
-          aria-hidden
-          className="fixed inset-x-0 top-0 z-50 h-[2px] overflow-hidden"
-        >
-          <div className="bg-primary animate-[shimmer_1.2s_ease-in-out_infinite] h-full w-full origin-left" />
+        <div aria-hidden className="fixed inset-x-0 top-0 z-50 h-[2px] overflow-hidden">
+          <div className="bg-primary h-full w-full origin-left animate-[shimmer_1.2s_ease-in-out_infinite]" />
         </div>
       )}
       <header className="border-border/60 bg-background/78 sticky top-0 z-20 border-b shadow-[0_18px_44px_-34px_rgba(15,23,42,0.85)] backdrop-blur-xl">
@@ -94,17 +75,10 @@ function AppContainerContent({
   );
 }
 
-export function AppContainer({
-  children,
-  navSections,
-  sidebarProps,
-  className,
-  contentClassName,
-  user,
-}: AppContainerProps) {
+export function AppContainer({ children, className, contentClassName, user }: AppContainerProps) {
   return (
     <SidebarProvider className={cn("bg-background text-foreground min-h-svh", className)}>
-      <AppSidebar navSections={navSections} user={user} {...sidebarProps} />
+      <AppSidebar user={user} />
       <AppPageMetaProvider>
         <AppContainerContent contentClassName={contentClassName} user={user}>
           {children}
