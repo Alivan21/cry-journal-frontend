@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import * as React from "react";
-import { Link, useLocation } from "react-router";
+import { Link, matchPath, NavLink, useLocation, useMatch } from "react-router";
 
 import { ROUTES } from "@/common/constant/routes";
 import { Button } from "@/components/ui/button";
@@ -112,18 +112,11 @@ function EllipsisTooltip({
   const measure = React.useEffectEvent(() => {
     const el = ref.current;
     if (!el) return;
-    if (!enabled) {
-      setTruncated(false);
-      return;
-    }
     setTruncated(isTextOverflowing(el));
   });
 
   React.useLayoutEffect(() => {
-    if (!enabled) {
-      measure();
-      return;
-    }
+    if (!enabled) return;
     // Defer until after the sidebar's 200ms width transition has settled,
     // otherwise clientWidth is still at icon-mode width and every label
     // is falsely reported as truncated.
@@ -146,7 +139,10 @@ function EllipsisTooltip({
     </span>
   );
 
-  if (!truncated) {
+  // `enabled && truncated` derives the tooltip state without a synchronous
+  // setState call in an effect — when disabled, skip the tooltip regardless
+  // of the last measured value.
+  if (!enabled || !truncated) {
     return span;
   }
 
@@ -160,9 +156,11 @@ function EllipsisTooltip({
   );
 }
 
-function SidebarLeafItem({ item, pathname }: { item: AppSidebarLeafRoute; pathname: string }) {
+function SidebarLeafItem({ item }: { item: AppSidebarLeafRoute }) {
   const { state } = useSidebar();
-  const isActive = pathname === item.path;
+  // useMatch gives React Router's own interpretation of "active" (handles params,
+  // trailing slashes, etc.) rather than a raw string comparison.
+  const isActive = Boolean(useMatch({ path: item.path, end: true }));
 
   return (
     <SidebarMenuItem>
@@ -176,7 +174,7 @@ function SidebarLeafItem({ item, pathname }: { item: AppSidebarLeafRoute; pathna
         isActive={isActive}
         tooltip={state === "collapsed" ? item.title : undefined}
       >
-        <Link className="flex w-full min-w-0 items-center gap-2" to={item.path}>
+        <NavLink className="flex w-full min-w-0 items-center gap-2" to={item.path}>
           <item.icon
             className={cn("size-4 shrink-0", isActive ? "text-primary" : "text-muted-foreground")}
           />
@@ -186,21 +184,19 @@ function SidebarLeafItem({ item, pathname }: { item: AppSidebarLeafRoute; pathna
             text={item.title}
           />
           <NavBadge badge={item.badge} />
-        </Link>
+        </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
 }
 
-function SidebarCollapsibleItem({
-  item,
-  pathname,
-}: {
-  item: AppSidebarParentRoute;
-  pathname: string;
-}) {
+function SidebarCollapsibleItem({ item }: { item: AppSidebarParentRoute }) {
   const { state } = useSidebar();
-  const hasActiveChild = item.children.some((child) => pathname === child.path);
+  // matchPath is a plain utility (not a hook), safe to call inside .some() / .map()
+  const { pathname } = useLocation();
+  const hasActiveChild = item.children.some((child) =>
+    Boolean(matchPath({ path: child.path, end: true }, pathname))
+  );
   const [manuallyOpen, setManuallyOpen] = React.useState(false);
   const open = hasActiveChild || manuallyOpen;
 
@@ -231,7 +227,7 @@ function SidebarCollapsibleItem({
         <CollapsibleContent>
           <SidebarMenuSub className="border-sidebar-border/80 mt-1 space-y-1 border-l pl-3">
             {item.children.map((child) => {
-              const isActive = pathname === child.path;
+              const isActive = Boolean(matchPath({ path: child.path, end: true }, pathname));
 
               return (
                 <SidebarMenuSubItem key={child.path}>
@@ -244,13 +240,13 @@ function SidebarCollapsibleItem({
                     )}
                     isActive={isActive}
                   >
-                    <Link className="flex w-full min-w-0 items-center gap-2" to={child.path}>
+                    <NavLink className="flex w-full min-w-0 items-center gap-2" to={child.path}>
                       <EllipsisTooltip
                         className="min-w-0 flex-1"
                         enabled={state === "expanded"}
                         text={child.title}
                       />
-                    </Link>
+                    </NavLink>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               );
@@ -258,6 +254,33 @@ function SidebarCollapsibleItem({
           </SidebarMenuSub>
         </CollapsibleContent>
       </Collapsible>
+    </SidebarMenuItem>
+  );
+}
+
+/** Footer navigation item — extracted so it can call `useMatch` as a hook. */
+function FooterLinkItem({ item }: { item: AppSidebarFooterLink }) {
+  const isActive = Boolean(useMatch({ path: item.path, end: true }));
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        className={cn(
+          "text-sidebar-foreground/85 hover:text-sidebar-foreground h-10 rounded-xl px-3 text-sm font-medium transition-all",
+          isActive &&
+            "bg-background text-primary ring-border/70 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)] ring-1"
+        )}
+        isActive={isActive}
+        tooltip={item.title}
+      >
+        <NavLink to={item.path}>
+          <item.icon
+            className={cn("size-4", isActive ? "text-primary" : "text-muted-foreground")}
+          />
+          <span>{item.title}</span>
+        </NavLink>
+      </SidebarMenuButton>
     </SidebarMenuItem>
   );
 }
@@ -288,7 +311,6 @@ export function AppSidebar({
   brandName = DEFAULT_BRAND_NAME,
   user,
 }: AppSidebarProps) {
-  const { pathname } = useLocation();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
@@ -325,9 +347,9 @@ export function AppSidebar({
               <SidebarMenu className="gap-1">
                 {section.items.map((item) =>
                   hasChildren(item) ? (
-                    <SidebarCollapsibleItem item={item} key={item.title} pathname={pathname} />
+                    <SidebarCollapsibleItem item={item} key={item.title} />
                   ) : (
-                    <SidebarLeafItem item={item} key={item.path} pathname={pathname} />
+                    <SidebarLeafItem item={item} key={item.path} />
                   )
                 )}
               </SidebarMenu>
@@ -336,7 +358,7 @@ export function AppSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-sidebar-border/80 border-t px-3 py-4">
+      <SidebarFooter className="border-sidebar-border/80 border-t px-3 pt-2 pb-4">
         <div className="flex items-center gap-2 md:hidden">
           <div className="min-w-0 flex-1">
             <AppProfileMenu
@@ -348,31 +370,9 @@ export function AppSidebar({
           <ModeToggle />
         </div>
         <SidebarMenu className="gap-1">
-          {footerLinks.map((item) => {
-            const isActive = pathname === item.path;
-
-            return (
-              <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton
-                  asChild
-                  className={cn(
-                    "text-sidebar-foreground/85 hover:text-sidebar-foreground h-10 rounded-xl px-3 text-sm font-medium transition-all",
-                    isActive &&
-                      "bg-background text-primary ring-border/70 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)] ring-1"
-                  )}
-                  isActive={isActive}
-                  tooltip={item.title}
-                >
-                  <Link to={item.path}>
-                    <item.icon
-                      className={cn("size-4", isActive ? "text-primary" : "text-muted-foreground")}
-                    />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
+          {footerLinks.map((item) => (
+            <FooterLinkItem item={item} key={item.path} />
+          ))}
         </SidebarMenu>
         <p className="text-muted-foreground px-1 pt-3 text-center text-[0.68rem] group-data-[collapsible=icon]:hidden">
           © {new Date().getFullYear()} {brandName}. Inc

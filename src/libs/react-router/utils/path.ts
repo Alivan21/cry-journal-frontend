@@ -19,18 +19,26 @@ export function getRouteSegmentsFromFilePath(
   const segments = filePath
     .replace("/app", "")
     .split("/")
-    .filter((segment) => !segment.startsWith("(index)") && !segment.startsWith("_"))
+    .filter(
+      (segment) =>
+        // Skip underscore-prefixed folders (colocated non-route files)
+        !segment.startsWith("_") &&
+        // Skip route-group folders (e.g. (public), (auth)) — they have no URL contribution
+        !(segment.startsWith("(") && segment.endsWith(")"))
+    )
     .map((segment) => parseSegment(segment));
 
   return buildSegmentPath(segments[0], segments, actualTransformer);
 }
 
 /**
- * Parse a file path segment and convert it to a route path segment
+ * Converts a single file-path segment to its React Router path equivalent.
+ *
+ * Route-group folders `(group)` are already filtered before this is called,
+ * so this only handles the remaining segment types.
  */
 function parseSegment(segment: string): string {
   if (segment.startsWith(".")) return "/";
-  if (segment.startsWith("(")) return segment.replace(/[()]/g, "") + "?";
   if (segment.startsWith("[...")) return "*";
   if (segment.startsWith("[")) return segment.replace("[", ":").replace("]", "");
   return segment;

@@ -12,9 +12,8 @@ import "./index.css";
 const pageFiles = import.meta.glob("./app/**/*(page|layout).tsx");
 const errorFiles = import.meta.glob("./app/**/*error.tsx");
 const notFoundFiles = import.meta.glob("./app/**/*404.tsx");
-const loadingFiles = import.meta.glob("./app/**/*loading.tsx");
 
-const routes = createRoutesFromFiles(pageFiles, errorFiles, notFoundFiles, loadingFiles);
+const routes = createRoutesFromFiles(pageFiles, errorFiles, notFoundFiles);
 const router = createBrowserRouter([routes]);
 
 createRoot(document.getElementById("root")!).render(

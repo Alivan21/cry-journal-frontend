@@ -1,3 +1,5 @@
+import { useNavigation } from "react-router";
+
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -30,9 +32,20 @@ function AppContainerContent({
   user,
 }: Pick<AppContainerProps, "children" | "contentClassName" | "user">) {
   const { action, breadcrumbs, description, title } = useAppPageMetaValue();
+  const navigation = useNavigation();
+  const isNavigating = navigation.state !== "idle";
 
   return (
     <SidebarInset className="min-h-svh bg-transparent">
+      {/* Top-of-page progress bar shown while React Router loads the next route */}
+      {isNavigating && (
+        <div
+          aria-hidden
+          className="fixed inset-x-0 top-0 z-50 h-[2px] overflow-hidden"
+        >
+          <div className="bg-primary animate-[shimmer_1.2s_ease-in-out_infinite] h-full w-full origin-left" />
+        </div>
+      )}
       <header className="border-border/60 bg-background/78 sticky top-0 z-20 border-b shadow-[0_18px_44px_-34px_rgba(15,23,42,0.85)] backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4 px-4 pt-3 pb-1.5 md:flex-row md:items-center md:justify-between md:px-6 md:py-3">
           <div className="flex min-w-0 items-center gap-3">

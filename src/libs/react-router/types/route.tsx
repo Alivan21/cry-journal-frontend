@@ -2,22 +2,26 @@ import type { JSX } from "react";
 import type { ActionFunction, LoaderFunction, RouteObject } from "react-router";
 
 /**
- * Represents the expected structure of a page module's exports.
+ * Represents the expected exports of a page or layout route module.
  */
 export type PageModuleExports = {
   default: () => JSX.Element;
   loader?: LoaderFunction;
   action?: ActionFunction;
+  /** Named export that becomes the route's ErrorBoundary. */
+  ErrorBoundary?: () => JSX.Element;
 };
 
 /**
- * Return type for route-level lazy(): partial route config resolved from a dynamic import.
- * Matches React Router 7's expectation (Component, loader, action).
+ * The partial route config returned by a route's `lazy()` function.
+ * React Router merges these fields onto the static route object on navigation.
  */
 export type LazyRouteReturn = {
   Component: () => JSX.Element;
   loader?: LoaderFunction;
   action?: ActionFunction;
+  /** Optional error boundary component for this route. */
+  ErrorBoundary?: () => JSX.Element;
 };
 
 /**
@@ -28,20 +32,16 @@ export type RouteHandle = {
 };
 
 /**
- * Extends the base RouteObject to include additional properties.
- * RouteObject from react-router already includes lazy; we add handle and custom fallbacks.
+ * Extends the base RouteObject with the typed `handle` field used by this
+ * file-based router. All other route properties come from React Router's own
+ * `RouteObject` — no custom fallback or loading fields are added here.
  */
 export type ExtendedRouteObject = Omit<RouteObject, "handle" | "children"> & {
   handle?: RouteHandle;
   children?: ExtendedRouteObject[];
-  HydrateFallback?: React.ComponentType;
-  LoadingComponent?: React.ComponentType;
 };
 
 export type PageModule = () => Promise<PageModuleExports>;
-export type LoadingModule = () => Promise<{ default: () => JSX.Element }>;
 export type RouteUpdater = (route: RouteObject) => RouteObject;
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const PATH_SEPARATOR = "\\";
-export const DEFAULT_FALLBACK = () => <div>Loading...</div>;

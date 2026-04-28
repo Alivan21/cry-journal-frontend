@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import type { ActionFunction, LoaderFunction } from "react-router";
-import { type ExtendedRouteObject, PATH_SEPARATOR, DEFAULT_FALLBACK } from "../types/route";
+import { type ExtendedRouteObject, PATH_SEPARATOR } from "../types/route";
 import { isDynamicRoute } from "../utils/path";
 
 type LazyRouteFn = () => Promise<{
@@ -12,12 +12,15 @@ type LazyRouteFn = () => Promise<{
 type CreateRouteLazyArgs = {
   segments: string[];
   lazy: LazyRouteFn;
-  LoadingComponent?: React.ComponentType;
 };
 
 /**
- * Creates a new route configuration based on path segments and React Router 7's route-level lazy.
- * Sets route.lazy and HydrateFallback; the router fills element/loader/action from the lazy result.
+ * Creates a new route configuration for a path segment and its lazy module.
+ *
+ * `HydrateFallback` is intentionally omitted here: per-route hydration
+ * fallbacks are only appropriate when a route has a `clientLoader` with
+ * `hydrate = true` (SSR/RSC pattern).  For client-side navigation loading
+ * feedback, use `useNavigation()` in a layout component instead.
  */
 export function createRoute(args: CreateRouteLazyArgs): ExtendedRouteObject {
   const [current, ...rest] = args.segments;
@@ -25,11 +28,7 @@ export function createRoute(args: CreateRouteLazyArgs): ExtendedRouteObject {
   const route: ExtendedRouteObject = { path: cleanPath };
 
   if (pageType === "page" || pageType === "layout") {
-    const FallbackComponent = args.LoadingComponent ?? DEFAULT_FALLBACK;
-
     route.lazy = args.lazy;
-    route.HydrateFallback = FallbackComponent;
-    route.LoadingComponent = FallbackComponent;
     route.handle = { pageType };
   }
 
@@ -60,18 +59,15 @@ function handleNestedRoutes(
 }
 
 /**
- * Creates a nested route for a dynamic segment (e.g. [id]).
+ * Creates a nested route for a dynamic path segment (e.g. `[id]`).
  */
 export function createNestedRoute(
   editSegment: string,
   args: CreateRouteLazyArgs
 ): ExtendedRouteObject {
-  const FallbackComponent = args.LoadingComponent ?? DEFAULT_FALLBACK;
-
   return {
     path: editSegment,
     lazy: args.lazy,
-    HydrateFallback: FallbackComponent,
     handle: { pageType: "page" },
   };
 }

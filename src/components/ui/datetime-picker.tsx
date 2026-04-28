@@ -149,15 +149,13 @@ function DateTimePicker({
     [selectedDayKey]
   );
 
-  const closeNestedTimePopover = React.useEffectEvent(() => {
-    setIsTimeOpen(false);
-  });
-
-  React.useEffect(() => {
-    if (!isOpen) {
-      closeNestedTimePopover();
-    }
-  }, [isOpen]);
+  const handleOuterOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!nextOpen) setIsTimeOpen(false);
+      setIsOpen(nextOpen);
+    },
+    [setIsOpen]
+  );
 
   const handleDateSelect = React.useCallback(
     (nextDate: Date | undefined) => {
@@ -201,7 +199,7 @@ function DateTimePicker({
   );
 
   return (
-    <Popover onOpenChange={setIsOpen} open={isOpen}>
+    <Popover onOpenChange={handleOuterOpenChange} open={isOpen}>
       <PopoverTrigger asChild>
         <Button
           aria-label={displayValue}

@@ -39,11 +39,10 @@ export const appNavigationMiddleware: MiddlewareFunction = async ({ request }, n
   const pathname = new URL(request.url).pathname;
   const auth = isAuthenticated();
 
-  if (isHomePath(pathname)) {
-    return next();
-  }
-
   if (!isPublicPath(pathname) && !auth) {
+    if (isHomePath(pathname)) {
+      throw redirect(ROUTES.PUBLIC.LOGIN);
+    }
     throw redirect(`${ROUTES.PUBLIC.LOGIN}?redirect=${encodeURIComponent(pathname)}`);
   }
 
