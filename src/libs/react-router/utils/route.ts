@@ -1,52 +1,15 @@
-import type { ExtendedRouteObject, RouteUpdater } from "../types/route";
-import type React from "react";
 import type { MiddlewareFunction, RouteObject } from "react-router";
 
 /**
- * Recursively traverses and updates routes based on segment paths.
- */
-export function setRoute(segments: string[], route: RouteObject, updater: RouteUpdater): void {
-  let currentRoute = route;
-
-  for (let i = 0; i < segments.length; i++) {
-    const isLastSegment = i === segments.length - 1;
-
-    if (isLastSegment) {
-      updater(currentRoute);
-      return;
-    }
-
-    const nextSegment = segments[i + 1];
-
-    // Make sure children exists
-    if (!currentRoute.children) {
-      throw new Error(
-        `Route with path ${currentRoute.path} has no children, but expected to find ${nextSegment}`
-      );
-    }
-
-    const childIndex = currentRoute.children.findIndex((child) => child.path === nextSegment);
-
-    if (childIndex === -1) {
-      throw new Error(
-        `Segment ${nextSegment} does not exist among the children of route with path ${currentRoute.path}`
-      );
-    }
-
-    currentRoute = currentRoute.children[childIndex];
-  }
-}
-
-/**
- * Walks from `root` using each segment as a child {@link RouteObject.path} and appends
- * {@link MiddlewareFunction}s to that node's `middleware` array.
+ * Walks the route tree from `root` following each segment as a child `path`
+ * and appends the given middleware to that node's `middleware` array.
  *
- * Use this after `createRoutesFromFiles` so route middleware stays on the **static** tree
- * (React Router does not allow `middleware` inside `lazy()` resolution).
+ * Must be called **after** `createRoutesFromFiles` — React Router does not
+ * allow `middleware` to be returned from inside a `lazy()` resolver.
  *
  * @example
- * // URL `/app/dashboard` → segments `["app", "dashboard"]` from the root `path: "/"` node
- * appendMiddlewareForPath(root, ["app", "dashboard"], [dashboardMiddleware]);
+ * // Attach auth guard to every route under /app
+ * appendMiddlewareForPath(root, ["app"], [authMiddleware]);
  */
 export function appendMiddlewareForPath(
   root: RouteObject,
@@ -58,7 +21,7 @@ export function appendMiddlewareForPath(
     const child = current.children?.find((c) => c.path === segment);
     if (!child) {
       throw new Error(
-        `appendMiddlewareForPath: no child with path "${segment}" under route path "${String(current.path)}"`
+        `appendMiddlewareForPath: no child with path "${segment}" under route "${String(current.path)}"`
       );
     }
     current = child;
@@ -67,8 +30,11 @@ export function appendMiddlewareForPath(
 }
 
 /**
- * Same as {@link appendMiddlewareForPath}, but attaches middleware to the **`index: true`**
- * child of the node reached by `segments` (the page module at `.../page.tsx` for that folder).
+ * Same as {@link appendMiddlewareForPath}, but attaches middleware to the
+ * `index: true` child of the node reached by `segments`.
+ *
+ * Useful when you need middleware on a folder's `page.tsx` index route rather
+ * than on the layout route that wraps it.
  */
 export function appendMiddlewareForIndexPath(
   root: RouteObject,
@@ -80,7 +46,7 @@ export function appendMiddlewareForIndexPath(
     const child = current.children?.find((c) => c.path === segment);
     if (!child) {
       throw new Error(
-        `appendMiddlewareForIndexPath: no child with path "${segment}" under route path "${String(current.path)}"`
+        `appendMiddlewareForIndexPath: no child with path "${segment}" under route "${String(current.path)}"`
       );
     }
     current = child;
@@ -88,255 +54,8 @@ export function appendMiddlewareForIndexPath(
   const indexChild = current.children?.find((c) => c.index === true);
   if (!indexChild) {
     throw new Error(
-      `appendMiddlewareForIndexPath: no index child under route path "${String(current.path)}"`
+      `appendMiddlewareForIndexPath: no index child under route "${String(current.path)}"`
     );
   }
   indexChild.middleware = [...(indexChild.middleware ?? []), ...middleware];
-}
-
-/**
- * Merges two route configurations while maintaining proper hierarchy.
- */
-export function mergeRoutes(
-  target: ExtendedRouteObject,
-  source: ExtendedRouteObject
-): ExtendedRouteObject {
-  if (target.path !== source.path) {
-    throw new Error(`Paths do not match: "${target.path}" and "${source.path}"`);
-  }
-
-  // Initialize children array if needed
-  target.children = target.children || [];
-
-  // Handle layouts first (they take precedence)
-  if (source.handle?.pageType === "layout") {
-    return handleLayoutMerge(target, source);
-  }
-
-  // Handle page route
-  if (source.handle?.pageType === "page") {
-    return handlePageMerge(target, source);
-  }
-
-  // Handle nested routes
-  if (source.children && source.children.length > 0) {
-    // If target is currently a page but source adds children,
-    // convert target's page to an index route before merging children.
-    if (target.handle?.pageType === "page") {
-      if (!target.children?.some((child) => child.index)) {
-        target.children = target.children || [];
-        target.children.unshift({
-          index: true,
-          lazy: target.lazy,
-          element: target.element,
-          action: target.action,
-          loader: target.loader,
-          handle: target.handle,
-          errorElement: target.errorElement,
-        });
-      }
-      delete target.lazy;
-      delete target.element;
-      delete target.action;
-      delete target.loader;
-      delete target.handle;
-    }
-    mergeChildRoutes(target, source);
-  }
-
-  return target;
-}
-
-/**
- * Handles the merging of a layout route.
- */
-export function handleLayoutMerge(
-  target: ExtendedRouteObject,
-  source: ExtendedRouteObject
-): ExtendedRouteObject {
-  if (!target.element && !target.lazy) {
-    Object.assign(target, {
-      lazy: source.lazy,
-      element: source.element,
-      action: source.action,
-      loader: source.loader,
-      handle: source.handle,
-      errorElement: source.errorElement,
-    });
-  } else if (target.handle?.pageType === "page") {
-    target = swapTargetRouteAsIndexRouteAndUpdateWithRoute(target, source);
-  }
-
-  return target;
-}
-
-/**
- * Takes a page route and converts it into an index route under a layout route.
- */
-export function swapTargetRouteAsIndexRouteAndUpdateWithRoute(
-  target: ExtendedRouteObject,
-  layout: ExtendedRouteObject
-): ExtendedRouteObject {
-  target.children = target.children || [];
-  target.children.push({
-    index: true,
-    lazy: target.lazy,
-    element: target.element,
-    action: target.action,
-    loader: target.loader,
-    handle: target.handle,
-    errorElement: target.errorElement,
-  });
-
-  Object.assign(target, {
-    lazy: layout.lazy,
-    element: layout.element,
-    action: layout.action,
-    loader: layout.loader,
-    handle: layout.handle,
-    errorElement: layout.errorElement,
-  });
-
-  return target;
-}
-
-/**
- * Handles the merging of a page route.
- */
-export function handlePageMerge(
-  target: ExtendedRouteObject,
-  source: ExtendedRouteObject
-): ExtendedRouteObject {
-  // Ensure target.children exists
-  if (!target.children) {
-    target.children = [];
-  }
-
-  // If there's no index route yet, add this page as index.
-  // Also handles the case where target is a layout and source is a page for the same path.
-  if (!target.children.some((child) => child.index) || target.handle?.pageType === "layout") {
-    if (target.handle?.pageType === "layout") {
-      addRouteAsIndexRouteForTargetRoute(target, source);
-    } else {
-      target.children.unshift({
-        index: true,
-        lazy: source.lazy,
-        element: source.element,
-        action: source.action,
-        loader: source.loader,
-        handle: source.handle,
-        errorElement: source.errorElement,
-      });
-    }
-  }
-
-  return target;
-}
-
-/**
- * Adds a route as an index route under a target layout route.
- */
-export function addRouteAsIndexRouteForTargetRoute(
-  target: ExtendedRouteObject,
-  page: ExtendedRouteObject
-): ExtendedRouteObject {
-  target.children = target.children || [];
-  target.children.push({
-    index: true,
-    lazy: page.lazy,
-    element: page.element,
-    action: page.action,
-    loader: page.loader,
-    handle: page.handle,
-    errorElement: page.errorElement,
-  });
-
-  return target;
-}
-
-/**
- * Merges child routes from source to target.
- */
-export function mergeChildRoutes(target: ExtendedRouteObject, source: ExtendedRouteObject): void {
-  if (!source.children) return;
-
-  // Ensure target.children exists
-  if (!target.children) {
-    target.children = [];
-  }
-
-  source.children.forEach((sourceChild) => {
-    const matchingChild = target.children!.find(
-      (targetChild) => targetChild.path === sourceChild.path
-    );
-
-    if (matchingChild) {
-      mergeRoutes(matchingChild, sourceChild);
-    } else {
-      target.children!.push(sourceChild);
-    }
-  });
-}
-
-/** Lazy function that resolves to a not-found route module. */
-type NotFoundLazy = () => Promise<{ Component: React.ComponentType }>;
-
-/**
- * Adds a 404 catch-all child (`path: "*"`) to the given route using a lazy
- * route module so the not-found component is code-split like every other route.
- *
- * When the route has no children yet (leaf page), the existing page is first
- * moved to an `index: true` child so the splat can be a sibling.
- */
-export function add404ToRoute(route: RouteObject, notFoundLazy: NotFoundLazy): RouteObject {
-  if (route.children?.length) {
-    set404NonPage(route, notFoundLazy);
-    route.children.push({ path: "*", lazy: notFoundLazy });
-    return route;
-  }
-
-  const tempRoute = { ...route };
-  route.children = [];
-
-  route.children.push({
-    index: true,
-    lazy: tempRoute.lazy,
-    element: tempRoute.element,
-    action: tempRoute.action,
-    loader: tempRoute.loader,
-  });
-
-  route.children.push({ path: "*", lazy: notFoundLazy });
-
-  delete route.lazy;
-  delete route.element;
-  delete route.action;
-  delete route.loader;
-
-  return route;
-}
-
-/**
- * Recursively adds an index not-found route to layout nodes that have children
- * but no index route yet, so navigating directly to such a segment shows the
- * not-found UI rather than a blank outlet.
- */
-function set404NonPage(routes: RouteObject, notFoundLazy: NotFoundLazy): void {
-  if (
-    routes.path &&
-    routes.children &&
-    routes.children.length > 0 &&
-    !routes.path.includes("?") &&
-    !routes.path.includes("/") &&
-    !routes.children.some((child) => child.index)
-  ) {
-    routes.children.push({
-      index: true,
-      lazy: notFoundLazy,
-    });
-  }
-
-  if (routes.children) {
-    routes.children.forEach((_route) => set404NonPage(_route, notFoundLazy));
-  }
 }

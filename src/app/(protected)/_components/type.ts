@@ -12,7 +12,6 @@ export type AppContainerUser = {
 
 export type AppContainerProps = {
   children: ReactNode;
-  sidebarProps?: AppSidebarProps;
   className?: string;
   contentClassName?: string;
   user?: AppContainerUser;

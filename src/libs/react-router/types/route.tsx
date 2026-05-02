@@ -1,47 +1,27 @@
 import type { JSX } from "react";
 import type { ActionFunction, LoaderFunction, RouteObject } from "react-router";
 
-/**
- * Represents the expected exports of a page or layout route module.
- */
+/** Expected exports from a route `page.tsx` or `layout.tsx` module. */
 export type PageModuleExports = {
   default: () => JSX.Element;
   loader?: LoaderFunction;
   action?: ActionFunction;
-  /** Named export that becomes the route's ErrorBoundary. */
-  ErrorBoundary?: () => JSX.Element;
 };
 
-/**
- * The partial route config returned by a route's `lazy()` function.
- * React Router merges these fields onto the static route object on navigation.
- */
+/** Shape returned by a React Router route-level `lazy()` function. */
 export type LazyRouteReturn = {
   Component: () => JSX.Element;
   loader?: LoaderFunction;
   action?: ActionFunction;
-  /** Optional error boundary component for this route. */
-  ErrorBoundary?: () => JSX.Element;
 };
 
-/**
- * Defines the type of page in the routing system.
- */
+/** Per-route metadata attached via React Router's `handle` field. */
 export type RouteHandle = {
   pageType: "page" | "layout";
 };
 
-/**
- * Extends the base RouteObject with the typed `handle` field used by this
- * file-based router. All other route properties come from React Router's own
- * `RouteObject` — no custom fallback or loading fields are added here.
- */
-export type ExtendedRouteObject = Omit<RouteObject, "handle" | "children"> & {
+/** `RouteObject` extended with typed `handle` for this project. */
+export type AppRouteObject = Omit<RouteObject, "handle" | "children"> & {
   handle?: RouteHandle;
-  children?: ExtendedRouteObject[];
+  children?: AppRouteObject[];
 };
-
-export type PageModule = () => Promise<PageModuleExports>;
-export type RouteUpdater = (route: RouteObject) => RouteObject;
-
-export const PATH_SEPARATOR = "\\";

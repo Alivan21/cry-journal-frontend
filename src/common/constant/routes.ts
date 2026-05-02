@@ -8,9 +8,9 @@ export const ROUTES = {
     VERIFY_EMAIL: "/verify-email",
   },
   PROTECTED: {
-    DASHBOARD: "/app/dashboard",
-    USERS: "/app/users",
-    SETTINGS: "/app/settings",
-    PROFILE: "/app/profile",
+    DASHBOARD: "/dashboard",
+    USERS: "/users",
+    SETTINGS: "/settings",
+    PROFILE: "/profile",
   },
 };

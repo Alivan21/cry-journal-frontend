@@ -59,6 +59,6 @@ export const appNavigationMiddleware: MiddlewareFunction = async ({ request }, n
  */
 export function applyAppMiddleware(root: RouteObject): RouteObject {
   const existing = root.middleware ?? [];
-  // root.middleware = [...existing, appNavigationMiddleware];
+  root.middleware = [...existing, appNavigationMiddleware];
   return root;
 }
