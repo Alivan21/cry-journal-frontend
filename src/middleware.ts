@@ -8,13 +8,7 @@ import { SessionAuthCookies } from "./libs/cookies";
 /* eslint-disable @typescript-eslint/only-throw-error */
 
 /** Public paths derived from ROUTES — used for auth gating. */
-const PUBLIC_ROUTE_PATHS = [
-  ROUTES.PUBLIC.LOGIN,
-  ROUTES.PUBLIC.REGISTER,
-  ROUTES.PUBLIC.FORGOT_PASSWORD,
-  ROUTES.PUBLIC.RESET_PASSWORD,
-  ROUTES.PUBLIC.VERIFY_EMAIL,
-] as const;
+const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER] as const;
 
 function isHomePath(pathname: string): boolean {
   return pathname === ROUTES.PUBLIC.HOME || pathname === "";
@@ -31,7 +25,7 @@ function isAuthenticated(): boolean {
 }
 
 /**
- * - Home (`ROUTES.PUBLIC.HOME`): always allowed (guests and logged-in users).
+ * - Home (`ROUTES.PUBLIC.HOME`): guests go to login; logged-in users → dashboard.
  * - Auth public routes (login, register, …): guests allowed; logged-in users → dashboard.
  * - Other routes: require auth or redirect to login with `redirect` query.
  */
@@ -46,7 +40,7 @@ export const appNavigationMiddleware: MiddlewareFunction = async ({ request }, n
     throw redirect(`${ROUTES.PUBLIC.LOGIN}?redirect=${encodeURIComponent(pathname)}`);
   }
 
-  if (isPublicPath(pathname) && auth) {
+  if (auth && (isHomePath(pathname) || isPublicPath(pathname))) {
     throw redirect(ROUTES.PROTECTED.DASHBOARD);
   }
 

@@ -3,9 +3,9 @@ export type SuccessResponse<T> = {
 };
 
 export type ErrorResponse = {
-  code: string;
-  message: string;
-  details: Array<string>;
+  error: {
+    code: string;
+    message: string;
+    details: Array<string>;
+  };
 };
-
-export type BaseResponse<T> = SuccessResponse<T> | ErrorResponse;

@@ -1,5 +1,6 @@
 import { httpClient } from "@/libs/axios";
 import type {
+  CurrentUserResponse,
   LoginRequest,
   LoginResponse,
   LogoutResponse,
@@ -22,4 +23,9 @@ async function logout() {
   return response.data;
 }
 
-export { register, login, logout };
+async function getCurrentUser() {
+  const response = await httpClient.get<CurrentUserResponse>("/auth/current-user");
+  return response.data;
+}
+
+export { register, login, logout, getCurrentUser };

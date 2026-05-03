@@ -1,5 +1,5 @@
 import z from "zod";
-import type { BaseResponse } from "@/common/types/base-response";
+import type { SuccessResponse } from "@/common/types/base-response";
 
 const registerSchema = z
   .object({
@@ -21,23 +21,27 @@ const loginSchema = z.object({
 type RegisterRequest = z.infer<typeof registerSchema>;
 type LoginRequest = z.infer<typeof loginSchema>;
 
-type AuthResponseData = {
-  accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    roles: Array<string>;
-  };
+type TUser = {
+  id: string;
+  email: string;
+  name: string;
+  roles: Array<string>;
 };
 
-type RegisterResponse = BaseResponse<AuthResponseData>;
+type AuthResponseData = {
+  accessToken: string;
+  user: TUser;
+};
 
-type LoginResponse = BaseResponse<AuthResponseData>;
+type RegisterResponse = SuccessResponse<AuthResponseData>;
 
-type LogoutResponse = BaseResponse<{
+type LoginResponse = SuccessResponse<AuthResponseData>;
+
+type LogoutResponse = SuccessResponse<{
   success: boolean;
 }>;
+
+type CurrentUserResponse = SuccessResponse<TUser>;
 
 export {
   registerSchema,
@@ -47,4 +51,5 @@ export {
   type RegisterResponse,
   type LoginResponse,
   type LogoutResponse,
+  type CurrentUserResponse,
 };

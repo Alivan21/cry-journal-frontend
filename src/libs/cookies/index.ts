@@ -6,18 +6,16 @@ const DEFAULT_OPTIONS: CookieSetOptions = {
   sameSite: "strict" as const,
 };
 
-const cookies = new Cookies({
-  ...DEFAULT_OPTIONS,
-});
+const cookies = new Cookies(undefined, DEFAULT_OPTIONS);
 
 export const SessionAuthCookies = {
   get: (): string | null | undefined => {
     return cookies.get<string>("session_auth");
   },
   set: (value: string, options?: Partial<CookieSetOptions>): void => {
-    cookies.set("session_auth", value, { ...options });
+    cookies.set("session_auth", value, { ...DEFAULT_OPTIONS, ...options });
   },
   remove: (): void => {
-    cookies.remove("session_auth", { path: "/" });
+    cookies.remove("session_auth", { path: DEFAULT_OPTIONS.path });
   },
 };
