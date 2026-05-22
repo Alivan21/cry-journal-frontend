@@ -1,6 +1,7 @@
 import { ChevronDown, LogOut, Settings } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
+import { useLogoutMutation } from "@/api/auth/query";
 import { ROUTES } from "@/common/constant/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/libs/clsx";
+import { useAppSession, useAppSessionStore } from "@/stores/app-session";
 
-import type { AppProfileMenuItem, AppProfileMenuProps } from "./type";
+import type { AppProfileMenuProps } from "./type";
 
 function getInitials(name?: string) {
   if (!name) return "CR";
@@ -29,28 +31,22 @@ function getInitials(name?: string) {
   return initials || "CR";
 }
 
-const MENU_ITEMS: AppProfileMenuItem[] = [
-  {
-    label: "Settings",
-    icon: Settings,
-    href: ROUTES.PROTECTED.SETTINGS,
-  },
+export function AppProfileMenu({ triggerClassName, contentAlign = "end" }: AppProfileMenuProps) {
+  const { user } = useAppSession();
+  const navigate = useNavigate();
+  const { isPending, mutate: logout } = useLogoutMutation();
 
-  {
-    label: "Logout",
-    icon: LogOut,
-    variant: "destructive",
-    onClick: () => console.log("Mock logout action"),
-  },
-];
+  const displayName = user?.name ?? "Profile";
+  const displayEmail = user?.email ?? "Add account details";
 
-export function AppProfileMenu({
-  user,
-  triggerClassName,
-  contentAlign = "end",
-}: AppProfileMenuProps) {
-  const displayName = user?.name || "Profile";
-  const displayEmail = user?.email || "Add account details";
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        useAppSessionStore.getState().clearSession();
+        void navigate(ROUTES.PUBLIC.LOGIN);
+      },
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -60,6 +56,7 @@ export function AppProfileMenu({
             "border-border/60 bg-background h-11 rounded-xl px-3 shadow-sm",
             triggerClassName
           )}
+          disabled={isPending}
           type="button"
           variant="outline"
         >
@@ -79,23 +76,22 @@ export function AppProfileMenu({
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <div className="flex flex-col gap-2">
-          {MENU_ITEMS.map((item) => (
-            <DropdownMenuItem
-              asChild
-              className="cursor-pointer border-0"
-              key={item.label}
-              variant={item.variant as "default" | "destructive"}
-            >
-              {item.href ? (
-                <Link to={item.href}>{item.label}</Link>
-              ) : (
-                <Button onClick={item.onClick} variant={item.variant}>
-                  {item.label}
-                </Button>
-              )}
-            </DropdownMenuItem>
-          ))}
+        <div className="flex flex-col gap-1">
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to={ROUTES.PROTECTED.SETTINGS}>
+              <Settings className="size-4" />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            disabled={isPending}
+            onClick={handleLogout}
+            variant="destructive"
+          >
+            <LogOut className="size-4" />
+            <span>Logout</span>
+          </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

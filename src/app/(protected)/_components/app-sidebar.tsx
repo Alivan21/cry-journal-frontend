@@ -25,7 +25,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/libs/clsx";
 import type {
   AppSidebarParentRoute,
-  AppSidebarProps,
   AppSidebarRoute,
   EllipsisTooltipProps,
   FooterLinkItemProps,
@@ -266,7 +265,7 @@ function SidebarHeaderToggle() {
   );
 }
 
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
@@ -322,7 +321,6 @@ export function AppSidebar({ user }: AppSidebarProps) {
             <AppProfileMenu
               contentAlign="start"
               triggerClassName="w-full justify-start border-sidebar-border/80 shadow-none"
-              user={user}
             />
           </div>
           <ModeToggle />

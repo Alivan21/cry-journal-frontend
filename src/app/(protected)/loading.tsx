@@ -51,7 +51,7 @@ export default function AppLoading() {
     <div
       aria-busy="true"
       aria-label="Loading app"
-      className="bg-background text-foreground flex min-h-svh w-full"
+      className="bg-background text-foreground flex min-h-dvh w-full"
     >
       <aside className="border-sidebar-border/80 bg-sidebar/95 hidden w-64 shrink-0 border-r md:flex md:flex-col lg:w-56 xl:w-64">
         <div className="border-sidebar-border/80 flex items-center justify-between gap-3 border-b px-4 py-4">
@@ -81,7 +81,7 @@ export default function AppLoading() {
 
       <main className="relative flex min-w-0 flex-1 flex-col bg-transparent">
         <header className="border-border/60 bg-background/78 sticky top-0 z-20 border-b shadow-[0_18px_44px_-34px_rgba(15,23,42,0.85)] backdrop-blur-xl">
-          <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4 px-4 pt-3 pb-1.5 md:flex-row md:items-center md:justify-between md:px-6 md:py-3">
+          <div className="container mx-auto flex w-full flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <Skeleton className="size-10 rounded-xl md:hidden" />
               <div className="flex min-w-0 items-center gap-2">
@@ -99,7 +99,7 @@ export default function AppLoading() {
         </header>
 
         <div className="h-full max-h-dvh flex-1 overflow-hidden">
-          <div className="mx-auto flex min-h-full w-full max-w-[1600px] flex-col gap-6 px-4 py-5 md:px-6 md:py-6">
+          <div className="container mx-auto flex min-h-full w-full flex-col gap-6 p-4">
             <section className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div className="min-w-0 flex-1 space-y-2">
                 <Skeleton className="h-8 w-52" />
@@ -110,7 +110,10 @@ export default function AppLoading() {
 
             <section className="grid gap-4 md:grid-cols-3">
               {[0, 1, 2].map((item) => (
-                <div className="border-border/70 bg-card rounded-2xl border p-5 shadow-sm" key={item}>
+                <div
+                  className="border-border/70 bg-card rounded-2xl border p-5 shadow-sm"
+                  key={item}
+                >
                   <Skeleton className="mb-4 size-10 rounded-xl" />
                   <Skeleton className="mb-2 h-5 w-24" />
                   <Skeleton className="h-8 w-20" />

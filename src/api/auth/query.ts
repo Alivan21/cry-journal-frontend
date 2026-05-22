@@ -19,7 +19,6 @@ const authQueries = {
     queryOptions({
       queryKey: authQueries.currentUser(),
       queryFn: getCurrentUser,
-      enabled: !!SessionAuthCookies.get(),
     }),
 };
 

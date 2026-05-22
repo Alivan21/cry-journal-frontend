@@ -6,6 +6,9 @@ export const ROUTES = {
   },
   PROTECTED: {
     DASHBOARD: "/dashboard",
+    ACCOUNTS: {
+      INDEX: "/accounts",
+    },
     USERS: "/users",
     SETTINGS: "/settings",
     PROFILE: "/profile",

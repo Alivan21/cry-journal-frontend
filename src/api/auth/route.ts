@@ -24,7 +24,7 @@ async function logout() {
 }
 
 async function getCurrentUser() {
-  const response = await httpClient.get<CurrentUserResponse>("/auth/current-user");
+  const response = await httpClient.get<CurrentUserResponse>("/auth/me");
   return response.data;
 }
 

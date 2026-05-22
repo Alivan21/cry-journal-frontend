@@ -21,7 +21,7 @@ const loginSchema = z.object({
 type RegisterRequest = z.infer<typeof registerSchema>;
 type LoginRequest = z.infer<typeof loginSchema>;
 
-type TUser = {
+type UserItem = {
   id: string;
   email: string;
   name: string;
@@ -30,7 +30,7 @@ type TUser = {
 
 type AuthResponseData = {
   accessToken: string;
-  user: TUser;
+  user: UserItem;
 };
 
 type RegisterResponse = SuccessResponse<AuthResponseData>;
@@ -41,13 +41,14 @@ type LogoutResponse = SuccessResponse<{
   success: boolean;
 }>;
 
-type CurrentUserResponse = SuccessResponse<TUser>;
+type CurrentUserResponse = SuccessResponse<UserItem>;
 
 export {
   registerSchema,
   loginSchema,
   type RegisterRequest,
   type LoginRequest,
+  type UserItem,
   type RegisterResponse,
   type LoginResponse,
   type LogoutResponse,

@@ -6,6 +6,7 @@ export const httpClient = axios.create({
   baseURL: env.VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
 

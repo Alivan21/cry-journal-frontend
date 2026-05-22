@@ -4,9 +4,10 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/libs/clsx";
+import { useAppPageMeta } from "@/stores/app-page-meta";
+import { AppSessionSync } from "@/stores/app-session";
 
 import type { AppContainerProps } from "./type";
-import { AppPageMetaProvider, useAppPageMetaValue } from "./app-page-meta";
 import { AppProfileMenu } from "./app-profile-menu";
 import { AppSidebar } from "./app-sidebar";
 import { ModeToggle } from "./app-toogle-theme";
@@ -14,14 +15,13 @@ import { ModeToggle } from "./app-toogle-theme";
 function AppContainerContent({
   children,
   contentClassName,
-  user,
-}: Pick<AppContainerProps, "children" | "contentClassName" | "user">) {
-  const { action, breadcrumbs, description, title } = useAppPageMetaValue();
+}: React.PropsWithChildren<Pick<AppContainerProps, "contentClassName">>) {
+  const { action, breadcrumbs, description, title } = useAppPageMeta();
   const navigation = useNavigation();
   const isNavigating = navigation.state !== "idle";
 
   return (
-    <SidebarInset className="min-h-svh bg-transparent">
+    <SidebarInset className="min-h-dvh bg-transparent">
       {isNavigating && (
         <div aria-hidden className="fixed inset-x-0 top-0 z-50 h-[2px] overflow-hidden">
           <div className="bg-primary h-full w-full origin-left animate-[shimmer_1.2s_ease-in-out_infinite]" />
@@ -42,7 +42,7 @@ function AppContainerContent({
               <ModeToggle />
             </div>
             <div className="hidden md:block">
-              <AppProfileMenu user={user} />
+              <AppProfileMenu />
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@ function AppContainerContent({
           )}
         >
           {title || description || action ? (
-            <section className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <section className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
               <div className="min-w-0 flex-1">
                 {title ? (
                   <h1 className="text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
@@ -75,15 +75,16 @@ function AppContainerContent({
   );
 }
 
-export function AppContainer({ children, className, contentClassName, user }: AppContainerProps) {
+export function AppContainer({
+  children,
+  className,
+  contentClassName,
+}: React.PropsWithChildren<AppContainerProps>) {
   return (
-    <SidebarProvider className={cn("bg-background text-foreground min-h-svh", className)}>
-      <AppSidebar user={user} />
-      <AppPageMetaProvider>
-        <AppContainerContent contentClassName={contentClassName} user={user}>
-          {children}
-        </AppContainerContent>
-      </AppPageMetaProvider>
+    <SidebarProvider className={cn("bg-background text-foreground min-h-dvh", className)}>
+      <AppSessionSync />
+      <AppSidebar />
+      <AppContainerContent contentClassName={contentClassName}>{children}</AppContainerContent>
     </SidebarProvider>
   );
 }

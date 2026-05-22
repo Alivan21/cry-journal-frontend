@@ -19,8 +19,8 @@ export const APP_NAV_SECTIONS: AppSidebarSection[] = [
     label: "Trading",
     items: [
       {
-        title: "Account",
-        path: "/app/capital",
+        title: "Accounts",
+        path: ROUTES.PROTECTED.ACCOUNTS.INDEX,
         icon: Wallet,
       },
       {
