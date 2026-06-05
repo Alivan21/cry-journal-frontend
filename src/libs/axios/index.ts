@@ -21,9 +21,12 @@ httpClient.interceptors.request.use((config) => {
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      SessionAuthCookies.remove();
-      return Promise.reject(new Error("Unauthorized"));
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401 && SessionAuthCookies.get()) {
+        window.dispatchEvent(new Event("auth:unauthorized"));
+        SessionAuthCookies.remove();
+      }
+      return Promise.reject(error);
     }
     return Promise.reject(
       error instanceof Error ? error : new Error("An unexpected error occurred")

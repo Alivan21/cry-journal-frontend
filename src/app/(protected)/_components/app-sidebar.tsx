@@ -41,6 +41,15 @@ import {
 import { AppProfileMenu } from "./app-profile-menu";
 import { ModeToggle } from "./app-toogle-theme";
 
+const NAV_ITEM_BUTTON_CLASS =
+  "text-sidebar-foreground/85 hover:text-sidebar-foreground rounded-xl px-3 text-sm font-medium data-active:bg-background data-active:text-primary data-active:hover:bg-background data-active:hover:text-primary data-active:active:bg-background";
+
+const NAV_ITEM_ACTIVE_CLASS =
+  "bg-background text-primary ring-1 ring-border/70 dark:shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)]";
+
+const NAV_SUB_ITEM_BUTTON_CLASS =
+  "text-sidebar-foreground/80 hover:text-sidebar-foreground h-9 rounded-xl px-3 text-sm data-active:bg-background data-active:text-primary data-active:hover:bg-background data-active:hover:text-primary data-active:active:bg-background";
+
 function hasChildren(route: AppSidebarRoute): route is AppSidebarParentRoute {
   return "children" in route && Array.isArray(route.children) && route.children.length > 0;
 }
@@ -127,11 +136,7 @@ function SidebarLeafItem({ item }: SidebarLeafItemProps) {
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        className={cn(
-          "text-sidebar-foreground/85 hover:text-sidebar-foreground h-11 rounded-xl px-3 text-sm font-medium transition-all",
-          isActive &&
-            "bg-background text-primary ring-border/70 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)] ring-1"
-        )}
+        className={cn(NAV_ITEM_BUTTON_CLASS, "h-11", isActive && NAV_ITEM_ACTIVE_CLASS)}
         isActive={isActive}
         tooltip={state === "collapsed" ? item.title : undefined}
       >
@@ -165,7 +170,7 @@ function SidebarCollapsibleItem({ item }: SidebarCollapsibleItemProps) {
       <Collapsible onOpenChange={setManuallyOpen} open={open}>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton
-            className="text-sidebar-foreground/85 hover:text-sidebar-foreground h-11 rounded-xl px-3 text-sm font-medium transition-all"
+            className={cn(NAV_ITEM_BUTTON_CLASS, "h-11")}
             tooltip={state === "collapsed" ? item.title : undefined}
           >
             <item.icon className="text-muted-foreground size-4 shrink-0" />
@@ -193,11 +198,7 @@ function SidebarCollapsibleItem({ item }: SidebarCollapsibleItemProps) {
                 <SidebarMenuSubItem key={child.path}>
                   <SidebarMenuSubButton
                     asChild
-                    className={cn(
-                      "text-sidebar-foreground/80 hover:text-sidebar-foreground h-9 rounded-xl px-3 text-sm transition-all",
-                      isActive &&
-                        "bg-background text-primary ring-border/70 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)] ring-1"
-                    )}
+                    className={cn(NAV_SUB_ITEM_BUTTON_CLASS, isActive && NAV_ITEM_ACTIVE_CLASS)}
                     isActive={isActive}
                   >
                     <NavLink className="flex w-full min-w-0 items-center gap-2" to={child.path}>
@@ -226,11 +227,7 @@ function FooterLinkItem({ item }: FooterLinkItemProps) {
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        className={cn(
-          "text-sidebar-foreground/85 hover:text-sidebar-foreground h-10 rounded-xl px-3 text-sm font-medium transition-all",
-          isActive &&
-            "bg-background text-primary ring-border/70 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.9)] ring-1"
-        )}
+        className={cn(NAV_ITEM_BUTTON_CLASS, "h-10", isActive && NAV_ITEM_ACTIVE_CLASS)}
         isActive={isActive}
         tooltip={item.title}
       >

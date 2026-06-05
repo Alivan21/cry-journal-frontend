@@ -9,23 +9,17 @@ export default function AuthLayout() {
   return (
     <main className="bg-background text-foreground grid min-h-dvh lg:h-dvh lg:max-h-dvh lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.86fr)] lg:overflow-hidden">
       <section className="hidden p-4 lg:block lg:h-dvh lg:min-h-0">
-        <div className="border-border bg-card relative flex h-full overflow-hidden rounded-3xl border">
-          <div className="bg-muted absolute inset-0" />
-          <div className="absolute inset-0 opacity-80">
-            <div className="bg-primary/20 absolute -top-24 -left-20 size-72 rounded-full blur-3xl" />
-            <div className="bg-accent/20 absolute right-10 bottom-10 size-80 rounded-full blur-3xl" />
-            <div className="from-background via-background/70 absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t to-transparent" />
-          </div>
+        <div className="border-border bg-card/95 relative flex h-full overflow-hidden rounded-3xl border shadow-[0_28px_80px_-40px_rgba(15,23,42,0.55)] ring-1 ring-border/60 backdrop-blur-xl before:pointer-events-none before:absolute before:inset-x-8 before:top-0 before:z-20 before:h-px before:bg-linear-to-r before:from-transparent before:via-foreground/10 before:to-transparent dark:shadow-[0_28px_80px_-40px_rgba(15,23,42,0.9)]">
           <div className="relative z-10 flex w-full flex-col justify-between p-8">
             <div className="flex items-center gap-3">
-              <div className="border-border bg-background/80 text-primary flex size-10 items-center justify-center rounded-2xl border shadow-sm">
+              <div className="border-border bg-background/85 text-primary flex size-10 items-center justify-center rounded-2xl border shadow-[0_18px_40px_-28px_rgba(15,23,42,0.8)] ring-1 ring-border/60 backdrop-blur-sm">
                 <BookOpenText className="size-5" />
               </div>
               <span className="text-lg font-semibold tracking-tight">Cry Journal</span>
             </div>
 
             <div className="max-w-xl space-y-5">
-              <div className="border-border bg-background/80 text-primary flex size-14 items-center justify-center rounded-3xl border shadow-sm">
+              <div className="border-border bg-background/85 text-primary flex size-14 items-center justify-center rounded-3xl border shadow-[0_18px_40px_-28px_rgba(15,23,42,0.8)] ring-1 ring-border/60 backdrop-blur-sm">
                 <Sparkles className="size-7" />
               </div>
               <div className="space-y-3">
@@ -39,14 +33,14 @@ export default function AuthLayout() {
               </div>
 
               <div className="grid max-w-md grid-cols-2 gap-3">
-                <div className="border-border bg-background/70 rounded-2xl border p-4">
+                <div className="border-border bg-background/80 rounded-2xl border p-4 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.45)] ring-1 ring-border/50 backdrop-blur-sm">
                   <Brain className="text-primary mb-3 size-5" />
                   <p className="text-sm font-medium">Understand your mood</p>
                   <p className="text-muted-foreground mt-1 text-xs leading-5">
                     Track thoughts and feelings with daily context.
                   </p>
                 </div>
-                <div className="border-border bg-background/70 rounded-2xl border p-4">
+                <div className="border-border bg-background/80 rounded-2xl border p-4 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.45)] ring-1 ring-border/50 backdrop-blur-sm">
                   <LineChart className="text-primary mb-3 size-5" />
                   <p className="text-sm font-medium">Notice patterns</p>
                   <p className="text-muted-foreground mt-1 text-xs leading-5">
@@ -59,7 +53,7 @@ export default function AuthLayout() {
             <div className="flex flex-wrap gap-2">
               {featureChips.map((chip) => (
                 <span
-                  className="border-border bg-background/70 text-muted-foreground rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase"
+                  className="border-border bg-background/75 text-muted-foreground rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase ring-1 ring-border/50 backdrop-blur-sm"
                   key={chip}
                 >
                   {chip}

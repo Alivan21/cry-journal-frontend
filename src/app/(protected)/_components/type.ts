@@ -2,8 +2,8 @@ import type { buttonVariants } from "@/components/ui/button";
 import type { VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 
-export type { AppShellProps } from "@/stores/app-page-meta";
-export type { AppSessionUser } from "@/stores/app-session";
+export type { AppShellProps } from "@/stores/app-meta/types";
+export type { AppSessionUser } from "@/stores/app-session/types";
 
 export type AppContainerProps = {
   className?: string;

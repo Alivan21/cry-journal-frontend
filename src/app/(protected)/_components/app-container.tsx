@@ -4,8 +4,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/libs/clsx";
-import { useAppPageMeta } from "@/stores/app-page-meta";
-import { AppSessionSync } from "@/stores/app-session";
+import { usePageMeta } from "@/stores/app-meta/hooks";
+import { AppSessionSync } from "@/stores/app-session/app-session-sync";
 
 import type { AppContainerProps } from "./type";
 import { AppProfileMenu } from "./app-profile-menu";
@@ -16,12 +16,12 @@ function AppContainerContent({
   children,
   contentClassName,
 }: React.PropsWithChildren<Pick<AppContainerProps, "contentClassName">>) {
-  const { action, breadcrumbs, description, title } = useAppPageMeta();
+  const { action, breadcrumbs, description, title } = usePageMeta();
   const navigation = useNavigation();
   const isNavigating = navigation.state !== "idle";
 
   return (
-    <SidebarInset className="min-h-dvh bg-transparent">
+    <SidebarInset className="bg-transparent">
       {isNavigating && (
         <div aria-hidden className="fixed inset-x-0 top-0 z-50 h-[2px] overflow-hidden">
           <div className="bg-primary h-full w-full origin-left animate-[shimmer_1.2s_ease-in-out_infinite]" />
@@ -48,7 +48,7 @@ function AppContainerContent({
         </div>
       </header>
 
-      <ScrollArea className="h-full max-h-dvh flex-1">
+      <ScrollArea className="h-full flex-1">
         <main
           className={cn(
             "mx-auto flex min-h-full w-full max-w-[1600px] flex-col gap-6 px-4 py-5 md:px-6 md:py-6",

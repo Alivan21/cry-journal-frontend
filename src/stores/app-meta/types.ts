@@ -1,27 +1,29 @@
 import type { BreadcrumbsItem } from "@/components/breadcrumbs";
 import type { ReactNode } from "react";
 
-export type AppPageMeta = {
+export type AppMeta = {
   breadcrumbs?: BreadcrumbsItem[];
   title?: string;
   description?: string;
   action?: ReactNode;
 };
 
-export type AppPageMetaState = {
+export type AppMetaState = {
   breadcrumbs: BreadcrumbsItem[];
   title?: string;
   description?: string;
   action?: ReactNode;
 };
 
-export type AppPageMetaActions = {
-  setMeta: (meta: AppPageMeta) => void;
-  clearMeta: () => void;
+export type AppMetaActions = {
+  metaRegistered: (meta: AppMeta) => void;
+  metaCleared: () => void;
 };
 
-export type AppPageMetaStore = AppPageMetaState & AppPageMetaActions;
+export type AppMetaStore = AppMetaState & {
+  actions: AppMetaActions;
+};
 
-export type AppShellProps = AppPageMeta & {
+export type AppShellProps = AppMeta & {
   children: ReactNode;
 };

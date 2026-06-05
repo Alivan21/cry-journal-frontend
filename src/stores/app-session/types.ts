@@ -12,9 +12,12 @@ export type AppSessionState = {
 };
 
 export type AppSessionActions = {
-  setSession: (user: AppSessionUser) => void;
-  setStatus: (status: AppSessionStatus) => void;
-  clearSession: () => void;
+  sessionLoaded: (user: AppSessionUser) => void;
+  sessionLoading: () => void;
+  sessionFailed: () => void;
+  sessionCleared: () => void;
 };
 
-export type AppSessionStore = AppSessionState & AppSessionActions;
+export type AppSessionStore = AppSessionState & {
+  actions: AppSessionActions;
+};

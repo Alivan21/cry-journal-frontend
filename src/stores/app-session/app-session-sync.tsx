@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { authQueries } from "@/api/auth/query";
 import { useQuery } from "@/hooks/request/use-query";
 
-import { mapUserToAppSession } from "./map-user";
 import { useAppSessionStore } from "./store";
 
 /**
@@ -14,20 +13,22 @@ export function AppSessionSync() {
   const { data, isError, isPending } = useQuery(authQueries.getCurrentUserQuery());
 
   useEffect(() => {
-    const { clearSession, setSession, setStatus } = useAppSessionStore.getState();
+    const { sessionFailed, sessionLoaded, sessionLoading } = useAppSessionStore.getState().actions;
 
     if (isPending) {
-      setStatus("loading");
+      sessionLoading();
       return;
     }
 
     if (isError || !data?.data) {
-      clearSession();
-      setStatus("error");
+      sessionFailed();
       return;
     }
 
-    setSession(mapUserToAppSession(data.data));
+    sessionLoaded({
+      name: data.data.name,
+      email: data.data.email,
+    });
   }, [data, isError, isPending]);
 
   return null;

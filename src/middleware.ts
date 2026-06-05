@@ -4,9 +4,6 @@ import { ROUTES } from "./common/constant/routes";
 import { decodeJwt } from "./common/utils/jwt";
 import { SessionAuthCookies } from "./libs/cookies";
 
-/* React Router intentionally throws redirect() (a Response) from loaders/middleware. */
-/* eslint-disable @typescript-eslint/only-throw-error */
-
 /** Public paths derived from ROUTES — used for auth gating. */
 const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER] as const;
 
@@ -35,13 +32,13 @@ export const appNavigationMiddleware: MiddlewareFunction = async ({ request }, n
 
   if (!isPublicPath(pathname) && !auth) {
     if (isHomePath(pathname)) {
-      throw redirect(ROUTES.PUBLIC.LOGIN);
+      return redirect(ROUTES.PUBLIC.LOGIN);
     }
-    throw redirect(`${ROUTES.PUBLIC.LOGIN}?redirect=${encodeURIComponent(pathname)}`);
+    return redirect(`${ROUTES.PUBLIC.LOGIN}?redirect=${encodeURIComponent(pathname)}`);
   }
 
   if (auth && (isHomePath(pathname) || isPublicPath(pathname))) {
-    throw redirect(ROUTES.PROTECTED.DASHBOARD);
+    return redirect(ROUTES.PROTECTED.DASHBOARD);
   }
 
   return next();

@@ -3,6 +3,7 @@ import { ArrowRight, LockKeyhole, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+import { toast } from "sonner";
 import { useLoginMutation } from "@/api/auth/query";
 import { loginSchema } from "@/api/auth/type";
 import { ROUTES } from "@/common/constant/routes";
@@ -28,7 +29,12 @@ export default function Page() {
     onSubmit: ({ value }) => {
       mutate(
         { ...value, rememberMe },
-        { onSuccess: () => void navigate(ROUTES.PROTECTED.DASHBOARD) }
+        {
+          onSuccess: () => {
+            toast.success("Login Successfully");
+            void navigate(ROUTES.PROTECTED.DASHBOARD);
+          },
+        }
       );
     },
   });

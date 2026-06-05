@@ -9,7 +9,10 @@ const INITIAL_SESSION_STATE = {
 
 export const useAppSessionStore = create<AppSessionStore>((set) => ({
   ...INITIAL_SESSION_STATE,
-  setSession: (user) => set({ user, status: "ready" }),
-  setStatus: (status) => set({ status }),
-  clearSession: () => set(INITIAL_SESSION_STATE),
+  actions: {
+    sessionLoaded: (user) => set({ user, status: "ready" }),
+    sessionLoading: () => set({ status: "loading" }),
+    sessionFailed: () => set({ user: null, status: "error" }),
+    sessionCleared: () => set(INITIAL_SESSION_STATE),
+  },
 }));

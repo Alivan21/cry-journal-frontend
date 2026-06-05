@@ -20,5 +20,7 @@
     "**/package-lock.json": true,
     "**/yarn.lock": true,
     "**/bun.lockb": true
-  }
+  },
+
+  "tailwindCSS.classAttributes": [".*Class.*"]
 }
