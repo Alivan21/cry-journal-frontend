@@ -1,28 +1,6 @@
 import type { SelectOptionsResponse } from "@/common/types/base-response";
 import { httpClient } from "@/libs/axios";
-import type {
-  AccountGroupListResponse,
-  AccountGroupResponse,
-  AccountListResponse,
-  AccountResponse,
-  UpsertAccountGroupRequest,
-  UpsertAccountRequest,
-} from "./type";
-
-async function getAccountGroups() {
-  const response = await httpClient.get<AccountGroupListResponse>("/account-groups");
-  return response.data;
-}
-
-async function createAccountGroup(payload: UpsertAccountGroupRequest) {
-  const response = await httpClient.post<AccountGroupResponse>("/account-groups", payload);
-  return response.data;
-}
-
-async function updateAccountGroup(id: string, payload: UpsertAccountGroupRequest) {
-  const response = await httpClient.put<AccountGroupResponse>(`/account-groups/${id}`, payload);
-  return response.data;
-}
+import type { AccountListResponse, AccountResponse, UpsertAccountRequest } from "./type";
 
 async function getAccounts(group_id: string, archived: boolean) {
   const response = await httpClient.get<AccountListResponse>("/accounts", {
@@ -85,18 +63,15 @@ async function getAccountTimezones() {
 }
 
 export {
-  getAccountGroups,
-  createAccountGroup,
-  updateAccountGroup,
-  getAccounts,
-  createAccount,
-  bulkCreateAccounts,
-  updateAccount,
-  bulkUpdateAccounts,
   archiveAccount,
-  restoreAccount,
-  getAccountTypes,
-  getAccountCurrencies,
+  bulkCreateAccounts,
+  bulkUpdateAccounts,
+  createAccount,
   getAccountBrokers,
+  getAccountCurrencies,
+  getAccounts,
   getAccountTimezones,
+  getAccountTypes,
+  restoreAccount,
+  updateAccount,
 };

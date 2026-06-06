@@ -1,14 +1,12 @@
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
-import {
-  useBulkCreateAccountsMutation,
-  useCreateAccountGroupMutation,
-} from "@/api/accounts/query";
+import { useCreateAccountGroupMutation } from "@/api/account-groups/query";
 import {
   createAccountGroupFormSchema,
   type CreateAccountGroupFormValues,
-} from "@/api/accounts/type";
+} from "@/api/account-groups/type";
+import { useBulkCreateAccountsMutation } from "@/api/accounts/query";
 import { ROUTES } from "@/common/constant/routes";
 import { useAppForm } from "@/components/forms";
 

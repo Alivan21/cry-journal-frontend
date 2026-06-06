@@ -31,7 +31,7 @@ export function AccountGroupCard({
       <div className="relative z-10 flex flex-1 flex-col gap-1 p-4">
         <div className="mb-2 flex items-center justify-between">
           <Badge className="rounded-full font-normal" variant="secondary">
-            {accountCount ?? 0} {accountCount && accountCount > 1 ? "accounts" : "account"}
+            {accountCount ?? 0} {accountCount && accountCount > 1 ? "Accounts" : "Account"}
           </Badge>
           <div className="flex items-center gap-1">
             {actions?.length ? <ActionMenu actions={actions} /> : null}

@@ -1,4 +1,4 @@
-import type { AccountRowFormValues } from "@/api/accounts/type";
+import type { AccountRowFormValues } from "@/api/account-groups/type";
 
 const emptyAccountRow: AccountRowFormValues = {
   name: "",

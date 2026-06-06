@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
-import { accountQueries } from "@/api/accounts/query";
-import type { AccountGroupItem } from "@/api/accounts/type";
+import { accountGroupQueries } from "@/api/account-groups/query";
+import type { AccountGroupItem } from "@/api/account-groups/type";
 import { ROUTES } from "@/common/constant/routes";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -25,7 +25,7 @@ type AccountGroupsListProps = {
 };
 
 function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: AccountGroupsListProps) {
-  const { data } = useSuspenseQuery(accountQueries.getAccountGroupsQuery());
+  const { data } = useSuspenseQuery(accountGroupQueries.getAccountGroupsQuery());
 
   if (data.data.length === 0) {
     return (

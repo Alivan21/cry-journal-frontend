@@ -1,35 +1,25 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
-import { queryClient } from "@/libs/tanstack-query/query-client";
-import type { UpsertAccountGroupRequest, UpsertAccountRequest } from "./type";
+import type { UpsertAccountRequest } from "./type";
 import {
   archiveAccount,
   bulkCreateAccounts,
   bulkUpdateAccounts,
   createAccount,
-  createAccountGroup,
   getAccountBrokers,
   getAccountCurrencies,
-  getAccountGroups,
   getAccounts,
   getAccountTimezones,
   getAccountTypes,
   restoreAccount,
   updateAccount,
-  updateAccountGroup,
 } from "./route";
 
 const accountQueries = {
-  all: () => ["account-groups"],
-  accounts: () => [...accountQueries.all(), "accounts"],
+  all: () => ["accounts"],
   selectOptions: () => [...accountQueries.all(), "select-options"],
-  getAccountGroupsQuery: () =>
-    queryOptions({
-      queryKey: accountQueries.all(),
-      queryFn: getAccountGroups,
-    }),
   getAccountsQuery: (group_id: string, archived: boolean) =>
     queryOptions({
-      queryKey: [...accountQueries.accounts(), group_id, archived],
+      queryKey: [...accountQueries.all(), group_id, archived],
       queryFn: () => getAccounts(group_id, archived),
     }),
   getAccountTypesQuery: () =>
@@ -54,35 +44,13 @@ const accountQueries = {
     }),
 };
 
-const useCreateAccountGroupMutation = () => {
-  return useMutation({
-    mutationFn: (payload: UpsertAccountGroupRequest) => createAccountGroup(payload),
-    onSuccess: async () => {
-      await queryClient.refetchQueries({
-        queryKey: accountQueries.all(),
-        type: "all",
-      });
-    },
-    meta: {
-      invalidates: [accountQueries.all()],
-    },
-  });
-};
-
-const useUpdateAccountGroupMutation = (id: string) => {
-  return useMutation({
-    mutationFn: (payload: UpsertAccountGroupRequest) => updateAccountGroup(id, payload),
-    meta: {
-      invalidates: [accountQueries.all()],
-    },
-  });
-};
+const invalidateRelatedQueries = [accountQueries.all(), ["account-groups"] as const];
 
 const useCreateAccountMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest) => createAccount(payload),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
@@ -91,7 +59,7 @@ const useBulkCreateAccountsMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest[]) => bulkCreateAccounts(payload),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
@@ -100,7 +68,7 @@ const useUpdateAccountMutation = (id: string) => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest) => updateAccount(id, payload),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
@@ -109,15 +77,16 @@ const useBulkUpdateAccountsMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest & { id: string }[]) => bulkUpdateAccounts(payload),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
+
 const useArchiveAccountMutation = () => {
   return useMutation({
     mutationFn: (id: string) => archiveAccount(id),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
@@ -126,19 +95,17 @@ const useRestoreAccountMutation = () => {
   return useMutation({
     mutationFn: (id: string) => restoreAccount(id),
     meta: {
-      invalidates: [accountQueries.all()],
+      invalidates: invalidateRelatedQueries,
     },
   });
 };
 
 export {
   accountQueries,
-  useCreateAccountGroupMutation,
-  useUpdateAccountGroupMutation,
-  useCreateAccountMutation,
-  useUpdateAccountMutation,
+  useArchiveAccountMutation,
   useBulkCreateAccountsMutation,
   useBulkUpdateAccountsMutation,
-  useArchiveAccountMutation,
+  useCreateAccountMutation,
   useRestoreAccountMutation,
+  useUpdateAccountMutation,
 };
