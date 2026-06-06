@@ -1,8 +1,10 @@
 import { FolderPlus, MonitorCheck, Plus } from "lucide-react";
 import { Suspense } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { accountQueries } from "@/api/accounts/query";
+import type { AccountGroupItem } from "@/api/accounts/type";
 import { ROUTES } from "@/common/constant/routes";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -19,9 +21,10 @@ const breadcrumbs = [
 
 type AccountGroupsListProps = {
   onCreateAccountGroup: () => void;
+  onUpdateAccountGroup: (accountGroup: AccountGroupItem) => void;
 };
 
-function AccountGroupsList({ onCreateAccountGroup }: AccountGroupsListProps) {
+function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: AccountGroupsListProps) {
   const { data } = useSuspenseQuery(accountQueries.getAccountGroupsQuery());
 
   if (data.data.length === 0) {
@@ -44,6 +47,12 @@ function AccountGroupsList({ onCreateAccountGroup }: AccountGroupsListProps) {
     <section className="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(236px,1fr))] gap-4">
       {data.data.map((accountGroup) => (
         <AccountGroupCard
+          actions={[
+            {
+              label: "Edit",
+              onClick: () => onUpdateAccountGroup(accountGroup),
+            },
+          ]}
           description={accountGroup.description}
           icon={MonitorCheck}
           key={accountGroup.id}
@@ -75,6 +84,10 @@ export default function Page() {
     void navigate(ROUTES.PROTECTED.ACCOUNTS.CREATE);
   };
 
+  const handleUpdateAccountGroup = (accountGroup: AccountGroupItem) => {
+    toast.info(`Update "${accountGroup.name}" is not available yet.`);
+  };
+
   return (
     <AppShell
       breadcrumbs={breadcrumbs}
@@ -85,7 +98,10 @@ export default function Page() {
       <Suspense
         fallback={<LoadingState count={8} title="Loading account groups" variant="card-grid" />}
       >
-        <AccountGroupsList onCreateAccountGroup={goToCreateAccountGroup} />
+        <AccountGroupsList
+          onCreateAccountGroup={goToCreateAccountGroup}
+          onUpdateAccountGroup={handleUpdateAccountGroup}
+        />
       </Suspense>
     </AppShell>
   );

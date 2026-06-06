@@ -54,6 +54,7 @@ type UpsertAccountGroupRequest = z.infer<ReturnType<typeof upsertAccountGroupSch
 type UpsertAccountRequest = z.infer<ReturnType<typeof upsertAccountSchema>>;
 
 export {
+  type AccountGroupItem,
   type AccountGroupListResponse,
   type AccountGroupResponse,
   type AccountItem,

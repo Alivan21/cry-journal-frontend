@@ -20,6 +20,7 @@ const loginSchema = z.object({
 
 type RegisterRequest = z.infer<typeof registerSchema>;
 type LoginRequest = z.infer<typeof loginSchema>;
+type LoginPayload = LoginRequest & { rememberMe: boolean };
 
 type UserItem = {
   id: string;
@@ -29,7 +30,6 @@ type UserItem = {
 };
 
 type AuthResponseData = {
-  accessToken: string;
   user: UserItem;
 };
 
@@ -48,6 +48,7 @@ export {
   loginSchema,
   type RegisterRequest,
   type LoginRequest,
+  type LoginPayload,
   type UserItem,
   type RegisterResponse,
   type LoginResponse,

@@ -1,35 +1,39 @@
 import axios from "axios";
 import { env } from "../env";
-import { SessionAuthStorage } from "../local-storage";
+import { queryClient } from "../tanstack-query/query-client";
 
 export const httpClient = axios.create({
   baseURL: env.VITE_API_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
   },
 });
 
-let unauthorizedDispatched = false;
+const LOGOUT_UNAUTHORIZED_SUPPRESSION_MS = 5_000;
 
-httpClient.interceptors.request.use((config) => {
-  const token = SessionAuthStorage.get();
-  if (token) {
-    unauthorizedDispatched = false;
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+let unauthorizedDispatched = false;
+let suppressUnauthorizedUntil = 0;
+
+export const setSuppressUnauthorizedEvent = (value: boolean) => {
+  suppressUnauthorizedUntil = value ? Date.now() + LOGOUT_UNAUTHORIZED_SUPPRESSION_MS : 0;
+};
 
 httpClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    unauthorizedDispatched = false;
+    return response;
+  },
   (error) => {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
-        const hadSession = Boolean(SessionAuthStorage.get());
-        SessionAuthStorage.remove();
+        queryClient.removeQueries({ queryKey: ["auth"] });
 
-        if (hadSession && !unauthorizedDispatched) {
+        if (Date.now() < suppressUnauthorizedUntil) {
+          return Promise.reject(error);
+        }
+
+        if (!unauthorizedDispatched) {
           unauthorizedDispatched = true;
           window.dispatchEvent(new Event("auth:unauthorized"));
         }

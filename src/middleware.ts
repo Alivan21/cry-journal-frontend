@@ -1,8 +1,8 @@
 import { redirect, type MiddlewareFunction, type RouteObject } from "react-router";
 
+import { authQueries } from "./api/auth/query";
 import { ROUTES } from "./common/constant/routes";
-import { decodeJwt } from "./common/utils/jwt";
-import { SessionAuthStorage } from "./libs/local-storage";
+import { queryClient } from "./libs/tanstack-query/query-client";
 
 /** Public paths derived from ROUTES — used for auth gating. */
 const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER] as const;
@@ -16,9 +16,13 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_ROUTE_PATHS.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
-function isAuthenticated(): boolean {
-  const token = SessionAuthStorage.get();
-  return Boolean(token && decodeJwt(token) !== null);
+async function isAuthenticated(): Promise<boolean> {
+  try {
+    await queryClient.ensureQueryData(authQueries.getCurrentUserQuery());
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -28,7 +32,7 @@ function isAuthenticated(): boolean {
  */
 export const appNavigationMiddleware: MiddlewareFunction = async ({ request }, next) => {
   const pathname = new URL(request.url).pathname;
-  const auth = isAuthenticated();
+  const auth = await isAuthenticated();
 
   if (!isPublicPath(pathname) && !auth) {
     if (isHomePath(pathname)) {

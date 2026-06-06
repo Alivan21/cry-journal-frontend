@@ -2,15 +2,15 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { toast } from "sonner";
 import { useMutation } from "@/hooks/request/use-mutation";
-import { SessionAuthStorage } from "@/libs/local-storage";
+import { setSuppressUnauthorizedEvent } from "@/libs/axios";
+import { queryClient } from "@/libs/tanstack-query/query-client";
 
-import type { LoginRequest, RegisterRequest } from "./type";
+import type { LoginPayload, RegisterRequest } from "./type";
 import { getCurrentUser, login, logout, register } from "./route";
 
-const SESSION_MAX_AGE_ONE_DAY_SEC = 24 * 60 * 60;
-const SESSION_MAX_AGE_THIRTY_DAYS_SEC = 30 * 24 * 60 * 60;
+const AUTH_STALE_TIME_MS = 5 * 60 * 1000;
 
-type LoginMutationVariables = LoginRequest & { rememberMe: boolean };
+type LoginMutationVariables = LoginPayload;
 
 const authQueries = {
   auth: () => ["auth"],
@@ -19,20 +19,13 @@ const authQueries = {
     queryOptions({
       queryKey: authQueries.currentUser(),
       queryFn: getCurrentUser,
+      staleTime: AUTH_STALE_TIME_MS,
     }),
 };
 
 const useLoginMutation = () => {
   return useMutation({
-    mutationFn: ({ rememberMe: _rememberMe, ...credentials }: LoginMutationVariables) =>
-      login(credentials),
-    onSuccess: (data, variables) => {
-      SessionAuthStorage.set(data.data.accessToken, {
-        maxAge: variables.rememberMe
-          ? SESSION_MAX_AGE_THIRTY_DAYS_SEC
-          : SESSION_MAX_AGE_ONE_DAY_SEC,
-      });
-    },
+    mutationFn: (credentials: LoginMutationVariables) => login(credentials),
     onError: (error) => {
       toast.error(error.response?.data?.error?.message || "Failed to login");
     },
@@ -57,10 +50,14 @@ const useRegisterMutation = () => {
 const useLogoutMutation = () => {
   return useMutation({
     mutationFn: () => logout(),
+    onMutate: () => {
+      setSuppressUnauthorizedEvent(true);
+    },
     onSuccess: () => {
-      SessionAuthStorage.remove();
+      queryClient.removeQueries({ queryKey: authQueries.auth() });
     },
     onError: (error) => {
+      setSuppressUnauthorizedEvent(false);
       toast.error(error.response?.data?.error?.message || "Failed to logout");
     },
     meta: {

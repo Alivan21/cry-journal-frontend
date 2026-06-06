@@ -1,3 +1,4 @@
+import { ActionMenu, type ActionMenuItem } from "@/components/ui/action-menu";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/libs/clsx";
 import type { LucideIcon } from "lucide-react";
@@ -11,6 +12,7 @@ type AccountGroupCardProps = {
   icon: LucideIcon;
   tone?: Tone;
   updatedAt?: string;
+  actions?: ActionMenuItem[];
 };
 
 const toneStyles: Record<Tone, string> = {
@@ -26,6 +28,7 @@ export function AccountGroupCard({
   icon: Icon,
   tone = "primary",
   updatedAt,
+  actions,
 }: AccountGroupCardProps) {
   return (
     <div
@@ -48,10 +51,15 @@ export function AccountGroupCard({
           >
             <Icon className="size-4" />
           </div>
-          {accountCount ? (
-            <Badge className="rounded-full font-normal" variant="secondary">
-              {accountCount} accounts
-            </Badge>
+          {accountCount || actions?.length ? (
+            <div className="flex items-center gap-1">
+              {accountCount ? (
+                <Badge className="rounded-full font-normal" variant="secondary">
+                  {accountCount} accounts
+                </Badge>
+              ) : null}
+              {actions?.length ? <ActionMenu actions={actions} /> : null}
+            </div>
           ) : null}
         </div>
 

@@ -1,7 +1,7 @@
 import { httpClient } from "@/libs/axios";
 import type {
   CurrentUserResponse,
-  LoginRequest,
+  LoginPayload,
   LoginResponse,
   LogoutResponse,
   RegisterRequest,
@@ -13,7 +13,7 @@ async function register(payload: RegisterRequest) {
   return response.data;
 }
 
-async function login(payload: LoginRequest) {
+async function login(payload: LoginPayload) {
   const response = await httpClient.post<LoginResponse>("/auth/login", payload);
   return response.data;
 }
