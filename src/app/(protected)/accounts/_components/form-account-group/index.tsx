@@ -1,63 +1,46 @@
-import type { UpsertAccountGroupRequest, upsertAccountGroupSchema } from "@/api/accounts/type";
-import { useAppForm } from "@/components/forms";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
+
+import type { AccountGroupFormApi } from "../../create/_hooks/use-create-account-group-form";
 
 type FormAccountGroupProps = {
-  defaultValues: UpsertAccountGroupRequest;
-  schema: ReturnType<typeof upsertAccountGroupSchema>;
-  onSubmit: (value: UpsertAccountGroupRequest) => void;
-  isPending?: boolean;
-  submitLabel?: string;
+  form: AccountGroupFormApi;
+  disabled?: boolean;
 };
 
-function FormAccountGroup({
-  defaultValues,
-  schema,
-  onSubmit,
-  isPending = false,
-  submitLabel = "Create",
-}: FormAccountGroupProps) {
-  const form = useAppForm({
-    defaultValues,
-    validators: {
-      onSubmit: schema,
-    },
-    onSubmit: ({ value }) => {
-      onSubmit(value);
-    },
-  });
-
+function FormAccountGroup({ form, disabled = false }: FormAccountGroupProps) {
   return (
-    <form
-      className="space-y-6"
-      onSubmit={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        void form.handleSubmit();
-      }}
-    >
+    <FieldSet className="gap-4">
+      <div className="space-y-1">
+        <FieldLegend className="mb-0">Account group</FieldLegend>
+        <p className="text-muted-foreground text-sm">
+          Name and describe the group that will hold your accounts.
+        </p>
+      </div>
+
       <FieldGroup>
         <form.AppField name="name">
-          {(field) => <field.TextField label="Name" placeholder="e.g. Brokerage" required />}
+          {(field) => (
+            <field.TextField
+              disabled={disabled}
+              label="Name"
+              placeholder="e.g. Brokerage"
+              required
+            />
+          )}
         </form.AppField>
 
         <form.AppField name="description">
           {(field) => (
             <field.TextareaField
+              disabled={disabled}
               label="Description"
               placeholder="Describe what this account group is for"
-              rows={4}
+              rows={3}
             />
           )}
         </form.AppField>
       </FieldGroup>
-
-      <form.AppForm>
-        <form.SubmitButton isPending={isPending} pendingLabel="Saving...">
-          {submitLabel}
-        </form.SubmitButton>
-      </form.AppForm>
-    </form>
+    </FieldSet>
   );
 }
 

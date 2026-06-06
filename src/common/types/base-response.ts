@@ -9,3 +9,10 @@ export type ErrorResponse = {
     details: Array<string>;
   };
 };
+
+export type SelectOption = {
+  label: string;
+  value: string;
+};
+
+export type SelectOptionsResponse = SuccessResponse<SelectOption[]>;

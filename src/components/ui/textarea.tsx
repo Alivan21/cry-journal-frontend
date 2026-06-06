@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "@/libs/clsx";
+import { cn } from "@/libs/clsx/index";
 
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (

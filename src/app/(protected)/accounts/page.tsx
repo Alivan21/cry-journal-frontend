@@ -1,4 +1,4 @@
-import { FolderPlus, MonitorCheck, Plus } from "lucide-react";
+import { FolderPlus, Plus } from "lucide-react";
 import { Suspense } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -47,6 +47,7 @@ function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: Accou
     <section className="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(236px,1fr))] gap-4">
       {data.data.map((accountGroup) => (
         <AccountGroupCard
+          accountCount={accountGroup.accountCount}
           actions={[
             {
               label: "Edit",
@@ -54,7 +55,6 @@ function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: Accou
             },
           ]}
           description={accountGroup.description}
-          icon={MonitorCheck}
           key={accountGroup.id}
           name={accountGroup.name}
         />

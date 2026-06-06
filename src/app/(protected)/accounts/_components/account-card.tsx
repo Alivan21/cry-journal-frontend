@@ -1,32 +1,19 @@
 import { ActionMenu, type ActionMenuItem } from "@/components/ui/action-menu";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/libs/clsx";
-import type { LucideIcon } from "lucide-react";
-
-type Tone = "success" | "info" | "primary";
 
 type AccountGroupCardProps = {
   name: string;
   description: string;
   accountCount?: number;
-  icon: LucideIcon;
-  tone?: Tone;
   updatedAt?: string;
   actions?: ActionMenuItem[];
-};
-
-const toneStyles: Record<Tone, string> = {
-  success: "bg-success/10 text-success",
-  info: "bg-info/10 text-info",
-  primary: "bg-primary/10 text-primary",
 };
 
 export function AccountGroupCard({
   name,
   description,
   accountCount,
-  icon: Icon,
-  tone = "primary",
   updatedAt,
   actions,
 }: AccountGroupCardProps) {
@@ -41,26 +28,14 @@ export function AccountGroupCard({
         "hover:cursor-pointer"
       )}
     >
-      <div className="relative z-10 flex flex-1 flex-col p-4">
-        <div className="mb-2 flex min-h-10 items-start justify-between">
-          <div
-            className={cn(
-              "flex size-10 shrink-0 items-center justify-center rounded-lg",
-              toneStyles[tone]
-            )}
-          >
-            <Icon className="size-4" />
+      <div className="relative z-10 flex flex-1 flex-col gap-1 p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <Badge className="rounded-full font-normal" variant="secondary">
+            {accountCount ?? 0} {accountCount && accountCount > 1 ? "accounts" : "account"}
+          </Badge>
+          <div className="flex items-center gap-1">
+            {actions?.length ? <ActionMenu actions={actions} /> : null}
           </div>
-          {accountCount || actions?.length ? (
-            <div className="flex items-center gap-1">
-              {accountCount ? (
-                <Badge className="rounded-full font-normal" variant="secondary">
-                  {accountCount} accounts
-                </Badge>
-              ) : null}
-              {actions?.length ? <ActionMenu actions={actions} /> : null}
-            </div>
-          ) : null}
         </div>
 
         <div className="flex flex-1 flex-col gap-1.5">

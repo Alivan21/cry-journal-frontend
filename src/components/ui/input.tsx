@@ -2,7 +2,7 @@ import { Eye, EyeOff } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/libs/clsx";
+import { cn } from "@/libs/clsx/index";
 
 type InputProps = React.ComponentProps<"input"> & {
   startIcon?: React.ReactNode;
