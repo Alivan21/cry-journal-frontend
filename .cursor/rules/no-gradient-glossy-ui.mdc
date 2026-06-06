@@ -1,0 +1,11 @@
+---
+description: Prefer glossy UI surfaces without gradients
+alwaysApply: true
+---
+
+# Glossy UI Without Gradients
+
+- Do not add gradient colors or gradient utilities in this project UI.
+- Avoid Tailwind classes and CSS functions such as `bg-gradient-*`, `bg-linear-*`, `radial-gradient`, `linear-gradient`, `conic-gradient`, `from-*`, `via-*`, and `to-*`.
+- Build polished glossy surfaces with solid or translucent theme colors, borders, blur, layered shadows, subtle highlights, and existing design tokens.
+- If a gradient already exists in untouched legacy code, do not expand it. Prefer replacing it when editing that area.

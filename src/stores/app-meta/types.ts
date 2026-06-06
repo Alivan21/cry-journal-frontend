@@ -5,14 +5,16 @@ export type AppMeta = {
   breadcrumbs?: BreadcrumbsItem[];
   title?: string;
   description?: string;
-  action?: ReactNode;
+  topActions?: ReactNode;
+  backTo?: string;
 };
 
 export type AppMetaState = {
   breadcrumbs: BreadcrumbsItem[];
   title?: string;
   description?: string;
-  action?: ReactNode;
+  topActions?: ReactNode;
+  backTo?: string;
 };
 
 export type AppMetaActions = {

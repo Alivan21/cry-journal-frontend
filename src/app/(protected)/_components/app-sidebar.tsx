@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronLeft, ChevronRight, SquareChartGantt } from "lucide-react";
-import * as React from "react";
+import { useRef, useState, useEffect, useLayoutEffect, useEffectEvent } from "react";
 import { Link, matchPath, NavLink, useLocation, useMatch } from "react-router";
 
 import { ROUTES } from "@/common/constant/routes";
@@ -78,16 +78,16 @@ function isTextOverflowing(el: HTMLElement): boolean {
 }
 
 function EllipsisTooltip({ text, className, enabled = true }: EllipsisTooltipProps) {
-  const ref = React.useRef<HTMLSpanElement>(null);
-  const [truncated, setTruncated] = React.useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [truncated, setTruncated] = useState(false);
 
-  const measure = React.useEffectEvent(() => {
+  const measure = useEffectEvent(() => {
     const el = ref.current;
     if (!el) return;
     setTruncated(isTextOverflowing(el));
   });
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (!enabled) return;
     // Defer until after the sidebar's 200ms width transition has settled,
     // otherwise clientWidth is still at icon-mode width and every label
@@ -96,7 +96,7 @@ function EllipsisTooltip({ text, className, enabled = true }: EllipsisTooltipPro
     return () => clearTimeout(timer);
   }, [text, enabled]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!enabled) return;
     const el = ref.current;
     if (!el) return;
@@ -162,7 +162,7 @@ function SidebarCollapsibleItem({ item }: SidebarCollapsibleItemProps) {
   const hasActiveChild = item.children.some((child) =>
     Boolean(matchPath({ path: child.path, end: true }, pathname))
   );
-  const [manuallyOpen, setManuallyOpen] = React.useState(false);
+  const [manuallyOpen, setManuallyOpen] = useState(false);
   const open = hasActiveChild || manuallyOpen;
 
   return (

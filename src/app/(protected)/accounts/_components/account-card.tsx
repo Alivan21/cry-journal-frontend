@@ -7,7 +7,7 @@ type Tone = "success" | "info" | "primary";
 type AccountGroupCardProps = {
   name: string;
   description: string;
-  accountLength: number;
+  accountCount?: number;
   icon: LucideIcon;
   tone?: Tone;
   updatedAt?: string;
@@ -22,7 +22,7 @@ const toneStyles: Record<Tone, string> = {
 export function AccountGroupCard({
   name,
   description,
-  accountLength,
+  accountCount,
   icon: Icon,
   tone = "primary",
   updatedAt,
@@ -48,9 +48,11 @@ export function AccountGroupCard({
           >
             <Icon className="size-4" />
           </div>
-          <Badge className="rounded-full font-normal" variant="secondary">
-            {accountLength} accounts
-          </Badge>
+          {accountCount ? (
+            <Badge className="rounded-full font-normal" variant="secondary">
+              {accountCount} accounts
+            </Badge>
+          ) : null}
         </div>
 
         <div className="flex flex-1 flex-col gap-1.5">

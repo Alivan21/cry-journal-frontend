@@ -8,7 +8,8 @@ export function usePageMeta() {
       breadcrumbs: state.breadcrumbs,
       title: state.title,
       description: state.description,
-      action: state.action,
+      topActions: state.topActions,
+      backTo: state.backTo,
       metaRegistered: state.actions.metaRegistered,
       metaCleared: state.actions.metaCleared,
     }))

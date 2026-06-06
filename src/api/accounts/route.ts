@@ -9,17 +9,17 @@ import type {
 } from "./type";
 
 async function getAccountGroups() {
-  const response = await httpClient.get<AccountGroupListResponse>("/accounts-groups");
+  const response = await httpClient.get<AccountGroupListResponse>("/account-groups");
   return response.data;
 }
 
 async function createAccountGroup(payload: UpsertAccountGroupRequest) {
-  const response = await httpClient.post<AccountGroupResponse>("/accounts-groups", payload);
+  const response = await httpClient.post<AccountGroupResponse>("/account-groups", payload);
   return response.data;
 }
 
 async function updateAccountGroup(id: string, payload: UpsertAccountGroupRequest) {
-  const response = await httpClient.put<AccountGroupResponse>(`/accounts-groups/${id}`, payload);
+  const response = await httpClient.put<AccountGroupResponse>(`/account-groups/${id}`, payload);
   return response.data;
 }
 

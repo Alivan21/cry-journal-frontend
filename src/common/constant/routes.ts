@@ -8,6 +8,7 @@ export const ROUTES = {
     DASHBOARD: "/dashboard",
     ACCOUNTS: {
       INDEX: "/accounts",
+      CREATE: "/accounts/create",
     },
     USERS: "/users",
     SETTINGS: "/settings",

@@ -2,7 +2,7 @@ import { redirect, type MiddlewareFunction, type RouteObject } from "react-route
 
 import { ROUTES } from "./common/constant/routes";
 import { decodeJwt } from "./common/utils/jwt";
-import { SessionAuthCookies } from "./libs/cookies";
+import { SessionAuthStorage } from "./libs/local-storage";
 
 /** Public paths derived from ROUTES — used for auth gating. */
 const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER] as const;
@@ -17,7 +17,7 @@ function isPublicPath(pathname: string): boolean {
 }
 
 function isAuthenticated(): boolean {
-  const token = SessionAuthCookies.get();
+  const token = SessionAuthStorage.get();
   return Boolean(token && decodeJwt(token) !== null);
 }
 

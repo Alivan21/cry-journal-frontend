@@ -8,15 +8,13 @@ export default function AppLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    window.addEventListener("auth:unauthorized", () => {
+    const handleUnauthorized = () => {
       toast.error("Your session expired please login again");
-      void navigate(`${ROUTES.PUBLIC.LOGIN}`);
-    });
-    return () =>
-      window.removeEventListener(
-        "auth:unauthorized",
-        () => void navigate(`${ROUTES.PUBLIC.LOGIN}`)
-      );
+      void navigate(ROUTES.PUBLIC.LOGIN);
+    };
+
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
   }, [navigate]);
 
   return (

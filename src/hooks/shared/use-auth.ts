@@ -1,10 +1,10 @@
 import { decodeJwt } from "@/common/utils/jwt";
-import { SessionAuthCookies } from "@/libs/cookies";
+import { SessionAuthStorage } from "@/libs/local-storage";
 
 /**
- * Checks if the session cookie holds a decodable JWT.
- * @param token The session cookie value.
- * @returns True if the session cookie holds a decodable JWT, false otherwise.
+ * Checks if the stored session token is a decodable JWT.
+ * @param token The stored session token.
+ * @returns True if the token is a decodable JWT, false otherwise.
  */
 function hasValidSessionToken(token: string | null | undefined): boolean {
   if (!token) return false;
@@ -17,10 +17,10 @@ function hasValidSessionToken(token: string | null | undefined): boolean {
 }
 
 /**
- * Returns whether the current session cookie holds a decodable JWT (logged in).
- * @returns True if the session cookie holds a decodable JWT, false otherwise.
+ * Returns whether the current session holds a decodable JWT (logged in).
+ * @returns True if the session holds a decodable JWT, false otherwise.
  */
 export function useAuth(): boolean {
-  const token = SessionAuthCookies.get();
+  const token = SessionAuthStorage.get();
   return hasValidSessionToken(token);
 }

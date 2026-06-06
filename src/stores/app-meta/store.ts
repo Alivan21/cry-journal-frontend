@@ -4,6 +4,10 @@ import type { AppMeta, AppMetaState, AppMetaStore } from "./types";
 
 const EMPTY_META: AppMetaState = {
   breadcrumbs: [],
+  title: undefined,
+  description: undefined,
+  topActions: undefined,
+  backTo: undefined,
 };
 
 function normalizeMeta(meta?: AppMeta | null): AppMetaState {
@@ -15,7 +19,8 @@ function normalizeMeta(meta?: AppMeta | null): AppMetaState {
     breadcrumbs: meta.breadcrumbs ?? [],
     title: meta.title,
     description: meta.description,
-    action: meta.action,
+    topActions: meta.topActions,
+    backTo: meta.backTo,
   };
 }
 

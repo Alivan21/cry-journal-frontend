@@ -1,4 +1,4 @@
-import * as React from "react";
+import { Fragment } from "react";
 import { Link } from "react-router";
 
 import {
@@ -19,8 +19,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/libs/clsx";
 
+import type { ReactNode } from "react";
+
 export type BreadcrumbsItem = {
-  text: React.ReactNode;
+  text: ReactNode;
   url?: string;
 };
 
@@ -31,7 +33,7 @@ type BreadcrumbsProps = {
   className?: string;
 };
 
-function BreadcrumbLabel({ children }: { children: React.ReactNode }) {
+function BreadcrumbLabel({ children }: { children: ReactNode }) {
   return <span className="truncate">{children}</span>;
 }
 
@@ -93,10 +95,7 @@ export function Breadcrumbs({ items = EMPTY_ITEMS, className }: BreadcrumbsProps
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
                   {middleItems.map((item) => (
-                    <DropdownMenuItem
-                      asChild={Boolean(item.url)}
-                      key={item.url}
-                    >
+                    <DropdownMenuItem asChild={Boolean(item.url)} key={item.url}>
                       {item.url ? <Link to={item.url}>{item.text}</Link> : <span>{item.text}</span>}
                     </DropdownMenuItem>
                   ))}
@@ -113,12 +112,12 @@ export function Breadcrumbs({ items = EMPTY_ITEMS, className }: BreadcrumbsProps
             const isCurrentPage = index === items.length - 1;
 
             return (
-              <React.Fragment key={item.url ?? "current-page"}>
+              <Fragment key={item.url ?? "current-page"}>
                 <BreadcrumbItem className="min-w-0 shrink">
                   <BreadcrumbItemList isCurrentPage={isCurrentPage} item={item} />
                 </BreadcrumbItem>
                 {!isCurrentPage ? <BreadcrumbSeparator /> : null}
-              </React.Fragment>
+              </Fragment>
             );
           })
         )}

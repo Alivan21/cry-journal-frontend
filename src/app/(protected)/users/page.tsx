@@ -1,5 +1,5 @@
 import { ROUTES } from "@/common/constant/routes";
-import { AppShell } from "../_components/app-meta";
+import { AppShell } from "../_components/app-shell";
 
 const breadcrumbs = [
   { text: "Dashboard", url: ROUTES.PROTECTED.DASHBOARD },

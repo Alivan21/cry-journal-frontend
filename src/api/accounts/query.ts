@@ -1,4 +1,5 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/libs/tanstack-query/query-client";
 import type { UpsertAccountGroupRequest, UpsertAccountRequest } from "./type";
 import {
   archiveAccount,
@@ -29,6 +30,12 @@ const accountQueries = {
 const useCreateAccountGroupMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountGroupRequest) => createAccountGroup(payload),
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: accountQueries.accountGroups(),
+        type: "all",
+      });
+    },
     meta: {
       invalidates: [accountQueries.accountGroups()],
     },

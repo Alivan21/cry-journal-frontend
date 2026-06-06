@@ -1,6 +1,8 @@
-import { useNavigation } from "react-router";
+import { ChevronLeft } from "lucide-react";
+import { Link, useNavigation } from "react-router";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/libs/clsx";
@@ -16,7 +18,7 @@ function AppContainerContent({
   children,
   contentClassName,
 }: React.PropsWithChildren<Pick<AppContainerProps, "contentClassName">>) {
-  const { action, breadcrumbs, description, title } = usePageMeta();
+  const { topActions, breadcrumbs, description, title, backTo } = usePageMeta();
   const navigation = useNavigation();
   const isNavigating = navigation.state !== "idle";
 
@@ -48,24 +50,35 @@ function AppContainerContent({
         </div>
       </header>
 
-      <ScrollArea className="h-full flex-1">
+      <ScrollArea className="flex-1">
         <main
           className={cn(
             "mx-auto flex min-h-full w-full max-w-[1600px] flex-col gap-6 px-4 py-5 md:px-6 md:py-6",
             contentClassName
           )}
         >
-          {title || description || action ? (
+          {title || description || topActions ? (
             <section className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
               <div className="min-w-0 flex-1">
                 {title ? (
-                  <h1 className="text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
+                  <div className="flex items-center gap-2">
+                    {backTo ? (
+                      <Button aria-label="Go back" asChild size="icon-sm" variant="outline">
+                        <Link to={backTo}>
+                          <ChevronLeft />
+                        </Link>
+                      </Button>
+                    ) : null}
+                    <h1 className="text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
+                  </div>
                 ) : null}
                 {description ? (
                   <p className="text-muted-foreground max-w-3xl text-sm leading-6">{description}</p>
                 ) : null}
               </div>
-              {action ? <div className="flex shrink-0 items-center gap-2">{action}</div> : null}
+              {topActions ? (
+                <div className="flex shrink-0 items-center gap-2">{topActions}</div>
+              ) : null}
             </section>
           ) : null}
           {children}

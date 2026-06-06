@@ -58,7 +58,7 @@ export function AppProfileMenu({ triggerClassName, contentAlign = "end" }: AppPr
             "border-border/60 bg-background h-11 rounded-xl px-3 shadow-sm",
             triggerClassName
           )}
-          disabled={isPending}
+          disabled={isPending || status === "loading"}
           type="button"
           variant="outline"
         >
