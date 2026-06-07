@@ -1,7 +1,6 @@
 import { FolderPlus, Plus } from "lucide-react";
 import { Suspense } from "react";
 import { useNavigate } from "react-router";
-import { toast } from "sonner";
 
 import { accountGroupQueries } from "@/api/account-groups/query";
 import type { AccountGroupItem } from "@/api/account-groups/type";
@@ -85,7 +84,7 @@ export default function Page() {
   };
 
   const handleUpdateAccountGroup = (accountGroup: AccountGroupItem) => {
-    toast.info(`Update "${accountGroup.name}" is not available yet.`);
+    void navigate(ROUTES.PROTECTED.ACCOUNTS.EDIT(accountGroup.id));
   };
 
   return (

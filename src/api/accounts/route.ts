@@ -12,6 +12,11 @@ async function getAccounts(group_id: string, archived: boolean) {
   return response.data;
 }
 
+async function getAccount(id: string) {
+  const response = await httpClient.get<AccountResponse>(`/accounts/${id}`);
+  return response.data;
+}
+
 async function createAccount(payload: UpsertAccountRequest) {
   const response = await httpClient.post<AccountResponse>("/accounts", payload);
   return response.data;
@@ -27,7 +32,7 @@ async function updateAccount(id: string, payload: UpsertAccountRequest) {
   return response.data;
 }
 
-async function bulkUpdateAccounts(payload: UpsertAccountRequest & { id: string }[]) {
+async function bulkUpdateAccounts(payload: (UpsertAccountRequest & { id: string })[]) {
   const response = await httpClient.put<AccountResponse[]>("/accounts/bulk", payload);
   return response.data;
 }
@@ -67,6 +72,7 @@ export {
   bulkCreateAccounts,
   bulkUpdateAccounts,
   createAccount,
+  getAccount,
   getAccountBrokers,
   getAccountCurrencies,
   getAccounts,

@@ -20,6 +20,8 @@ const upsertAccountGroupSchema = (initialValue: Partial<AccountGroupItem>) => {
 
 const accountRowSchema = () =>
   z.object({
+    id: z.string().optional(),
+    archived: z.boolean().optional(),
     name: z.string().min(1),
     broker: z.string().min(1),
     accountType: z.string().min(1),

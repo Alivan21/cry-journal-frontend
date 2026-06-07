@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useCreateAccountGroupMutation } from "@/api/account-groups/query";
 import {
   createAccountGroupFormSchema,
+  type AccountRowFormValues,
   type CreateAccountGroupFormValues,
 } from "@/api/account-groups/type";
 import { useBulkCreateAccountsMutation } from "@/api/accounts/query";
@@ -13,7 +14,7 @@ import { useAppForm } from "@/components/forms";
 const defaultValues: CreateAccountGroupFormValues = {
   name: "",
   description: "",
-  accounts: [],
+  accounts: [] as AccountRowFormValues[],
 };
 
 function useCreateAccountGroupForm() {

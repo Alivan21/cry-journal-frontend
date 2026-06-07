@@ -10,6 +10,11 @@ async function getAccountGroups() {
   return response.data;
 }
 
+async function getAccountGroup(id: string) {
+  const response = await httpClient.get<AccountGroupResponse>(`/account-groups/${id}`);
+  return response.data;
+}
+
 async function createAccountGroup(payload: UpsertAccountGroupRequest) {
   const response = await httpClient.post<AccountGroupResponse>("/account-groups", payload);
   return response.data;
@@ -20,4 +25,4 @@ async function updateAccountGroup(id: string, payload: UpsertAccountGroupRequest
   return response.data;
 }
 
-export { createAccountGroup, getAccountGroups, updateAccountGroup };
+export { createAccountGroup, getAccountGroups, getAccountGroup, updateAccountGroup };

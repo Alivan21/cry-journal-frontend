@@ -8,6 +8,7 @@ import {
   getAccountBrokers,
   getAccountCurrencies,
   getAccounts,
+  getAccount,
   getAccountTimezones,
   getAccountTypes,
   restoreAccount,
@@ -16,11 +17,17 @@ import {
 
 const accountQueries = {
   all: () => ["accounts"],
-  selectOptions: () => [...accountQueries.all(), "select-options"],
+  detail: (id: string) => [...accountQueries.all(), id],
+  selectOptions: () => ["select-options"],
   getAccountsQuery: (group_id: string, archived: boolean) =>
     queryOptions({
       queryKey: [...accountQueries.all(), group_id, archived],
       queryFn: () => getAccounts(group_id, archived),
+    }),
+  getAccountQuery: (id: string) =>
+    queryOptions({
+      queryKey: accountQueries.detail(id),
+      queryFn: () => getAccount(id),
     }),
   getAccountTypesQuery: () =>
     queryOptions({
@@ -75,7 +82,7 @@ const useUpdateAccountMutation = (id: string) => {
 
 const useBulkUpdateAccountsMutation = () => {
   return useMutation({
-    mutationFn: (payload: UpsertAccountRequest & { id: string }[]) => bulkUpdateAccounts(payload),
+    mutationFn: (payload: (UpsertAccountRequest & { id: string })[]) => bulkUpdateAccounts(payload),
     meta: {
       invalidates: invalidateRelatedQueries,
     },
