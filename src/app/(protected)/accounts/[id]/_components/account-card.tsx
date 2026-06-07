@@ -1,5 +1,14 @@
 import { format } from "date-fns";
-import { Archive, ArchiveRestore, Building2, Coins, Globe, Layers, Wallet } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  Building2,
+  Coins,
+  Globe,
+  Layers,
+  Pencil,
+  Wallet,
+} from "lucide-react";
 
 import type { AccountItem } from "@/api/accounts/type";
 import { formatBalance } from "@/common/utils/format-balance";
@@ -14,6 +23,7 @@ type AccountCardProps = {
   disabled?: boolean;
   onArchive?: (accountId: string) => void | Promise<void>;
   onRestore?: (accountId: string) => void | Promise<void>;
+  onEdit?: (accountId: string) => void;
 };
 
 function AccountCard({
@@ -22,9 +32,20 @@ function AccountCard({
   disabled = false,
   onArchive,
   onRestore,
+  onEdit,
 }: AccountCardProps) {
+  const editAction = {
+    label: "Edit",
+    icon: Pencil,
+    onClick: () => {
+      onEdit?.(account.id);
+    },
+    disabled,
+  };
+
   const actions = archived
     ? [
+        editAction,
         {
           label: "Restore",
           icon: ArchiveRestore,
@@ -35,6 +56,7 @@ function AccountCard({
         },
       ]
     : [
+        editAction,
         {
           label: "Archive",
           icon: Archive,

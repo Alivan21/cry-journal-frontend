@@ -18,7 +18,7 @@ const accountGroupQueries = {
     }),
 };
 
-const invalidateRelatedQueries = [accountGroupQueries.all(), ["accounts"] as const];
+const invalidateRelatedQueries = [accountGroupQueries.all(), ["accounts"]];
 
 const useCreateAccountGroupMutation = () => {
   return useMutation({

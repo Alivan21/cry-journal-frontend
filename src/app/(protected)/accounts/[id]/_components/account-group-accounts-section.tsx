@@ -30,6 +30,10 @@ function AccountGroupAccountsSection({
     void navigate(ROUTES.PROTECTED.ACCOUNTS.EDIT(groupId));
   };
 
+  const handleEditAccount = (accountId: string) => {
+    void navigate(ROUTES.PROTECTED.ACCOUNTS.EDIT_ACCOUNT(groupId, accountId));
+  };
+
   return (
     <section className="space-y-4">
       <div className="space-y-0">
@@ -81,6 +85,7 @@ function AccountGroupAccountsSection({
                   disabled={isPending && pendingAccountId === account.id}
                   key={account.id}
                   onArchive={archiveAccount}
+                  onEdit={handleEditAccount}
                   onRestore={restoreAccount}
                 />
               ))}
@@ -106,6 +111,7 @@ function AccountGroupAccountsSection({
                   disabled={isPending && pendingAccountId === account.id}
                   key={account.id}
                   onArchive={archiveAccount}
+                  onEdit={handleEditAccount}
                   onRestore={restoreAccount}
                 />
               ))}

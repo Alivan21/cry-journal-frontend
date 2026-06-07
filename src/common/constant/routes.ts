@@ -11,6 +11,8 @@ export const ROUTES = {
       CREATE: "/accounts/create",
       DETAIL: (id: string) => `/accounts/${id}`,
       EDIT: (id: string) => `/accounts/${id}/edit`,
+      EDIT_ACCOUNT: (groupId: string, accountId: string) =>
+        `/accounts/${groupId}/${accountId}/edit`,
     },
     USERS: "/users",
     SETTINGS: "/settings",

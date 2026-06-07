@@ -5,7 +5,7 @@ import { ROUTES } from "./common/constant/routes";
 import { queryClient } from "./libs/tanstack-query/query-client";
 
 /** Public paths derived from ROUTES — used for auth gating. */
-const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER] as const;
+const PUBLIC_ROUTE_PATHS = [ROUTES.PUBLIC.LOGIN, ROUTES.PUBLIC.REGISTER];
 
 function isHomePath(pathname: string): boolean {
   return pathname === ROUTES.PUBLIC.HOME || pathname === "";
