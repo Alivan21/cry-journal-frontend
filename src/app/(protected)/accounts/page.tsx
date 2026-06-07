@@ -11,7 +11,7 @@ import { LoadingState } from "@/components/ui/loading-state";
 import { useSuspenseQuery } from "@/hooks/request/use-suspense-query";
 
 import { AppShell } from "../_components/app-shell";
-import { AccountGroupCard } from "./_components/account-card";
+import { AccountGroupCard } from "./_components/account-group-card";
 
 const breadcrumbs = [
   { text: "Dashboard", url: ROUTES.PROTECTED.DASHBOARD },
@@ -21,9 +21,14 @@ const breadcrumbs = [
 type AccountGroupsListProps = {
   onCreateAccountGroup: () => void;
   onUpdateAccountGroup: (accountGroup: AccountGroupItem) => void;
+  onViewAccountGroup: (accountGroup: AccountGroupItem) => void;
 };
 
-function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: AccountGroupsListProps) {
+function AccountGroupsList({
+  onCreateAccountGroup,
+  onUpdateAccountGroup,
+  onViewAccountGroup,
+}: AccountGroupsListProps) {
   const { data } = useSuspenseQuery(accountGroupQueries.getAccountGroupsQuery());
 
   if (data.data.length === 0) {
@@ -56,6 +61,7 @@ function AccountGroupsList({ onCreateAccountGroup, onUpdateAccountGroup }: Accou
           description={accountGroup.description}
           key={accountGroup.id}
           name={accountGroup.name}
+          onClick={() => onViewAccountGroup(accountGroup)}
         />
       ))}
     </section>
@@ -83,6 +89,10 @@ export default function Page() {
     void navigate(ROUTES.PROTECTED.ACCOUNTS.CREATE);
   };
 
+  const handleViewAccountGroup = (accountGroup: AccountGroupItem) => {
+    void navigate(ROUTES.PROTECTED.ACCOUNTS.DETAIL(accountGroup.id));
+  };
+
   const handleUpdateAccountGroup = (accountGroup: AccountGroupItem) => {
     void navigate(ROUTES.PROTECTED.ACCOUNTS.EDIT(accountGroup.id));
   };
@@ -100,6 +110,7 @@ export default function Page() {
         <AccountGroupsList
           onCreateAccountGroup={goToCreateAccountGroup}
           onUpdateAccountGroup={handleUpdateAccountGroup}
+          onViewAccountGroup={handleViewAccountGroup}
         />
       </Suspense>
     </AppShell>

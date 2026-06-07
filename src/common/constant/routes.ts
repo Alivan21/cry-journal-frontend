@@ -9,6 +9,7 @@ export const ROUTES = {
     ACCOUNTS: {
       INDEX: "/accounts",
       CREATE: "/accounts/create",
+      DETAIL: (id: string) => `/accounts/${id}`,
       EDIT: (id: string) => `/accounts/${id}/edit`,
     },
     USERS: "/users",

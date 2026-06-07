@@ -1,6 +1,8 @@
 import { ActionMenu, type ActionMenuItem } from "@/components/ui/action-menu";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/libs/clsx";
+import type { KeyboardEvent } from "react";
 
 type AccountGroupCardProps = {
   name: string;
@@ -8,6 +10,7 @@ type AccountGroupCardProps = {
   accountCount?: number;
   updatedAt?: string;
   actions?: ActionMenuItem[];
+  onClick?: () => void;
 };
 
 export function AccountGroupCard({
@@ -16,19 +19,27 @@ export function AccountGroupCard({
   accountCount,
   updatedAt,
   actions,
+  onClick,
 }: AccountGroupCardProps) {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <div
-      className={cn(
-        "group border-border relative flex h-full flex-col overflow-hidden rounded-xl border",
-        "transition-all hover:-translate-y-0.5",
-        "shadow-lg",
-        "before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit]",
-        "before:bg-[linear-gradient(180deg,color-mix(in_oklch,white_6%,transparent)_0%,transparent_40%)]",
-        "hover:cursor-pointer"
-      )}
+    <Card
+      className={cn(onClick && "hover:cursor-pointer")}
+      interactive
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
-      <div className="relative z-10 flex flex-1 flex-col gap-1 p-4">
+      <CardContent className="gap-1">
         <div className="mb-2 flex items-center justify-between">
           <Badge className="rounded-full font-normal" variant="secondary">
             {accountCount ?? 0} {accountCount && accountCount > 1 ? "Accounts" : "Account"}
@@ -46,12 +57,12 @@ export function AccountGroupCard({
             {description}
           </p>
         </div>
-      </div>
+      </CardContent>
 
-      <div className="border-border/60 text-muted-foreground relative z-10 flex min-h-9 shrink-0 items-center justify-between border-t px-4 py-2 text-xs">
+      <CardFooter className="justify-between">
         {updatedAt ? <span>Updated {updatedAt}</span> : null}
         <span className="text-foreground font-medium">View accounts →</span>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
