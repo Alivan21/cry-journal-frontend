@@ -1,6 +1,5 @@
 import { redirect, type MiddlewareFunction, type RouteObject } from "react-router";
 
-import { authQueries } from "./api/auth/query";
 import { ROUTES } from "./common/constant/routes";
 import { queryClient } from "./libs/tanstack-query/query-client";
 
@@ -18,6 +17,7 @@ function isPublicPath(pathname: string): boolean {
 
 async function isAuthenticated(): Promise<boolean> {
   try {
+    const [{ authQueries }] = await Promise.all([import("./api/auth/query")]);
     await queryClient.ensureQueryData(authQueries.getCurrentUserQuery());
     return true;
   } catch {

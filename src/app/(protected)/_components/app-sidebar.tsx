@@ -50,6 +50,8 @@ const NAV_ITEM_ACTIVE_CLASS =
 const NAV_SUB_ITEM_BUTTON_CLASS =
   "text-sidebar-foreground/80 hover:text-sidebar-foreground h-9 rounded-xl px-3 text-sm data-active:bg-background data-active:text-primary data-active:hover:bg-background data-active:hover:text-primary data-active:active:bg-background";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 function hasChildren(route: AppSidebarRoute): route is AppSidebarParentRoute {
   return "children" in route && Array.isArray(route.children) && route.children.length > 0;
 }
@@ -328,7 +330,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
         <p className="text-muted-foreground px-1 pt-3 text-center text-[0.68rem] group-data-[collapsible=icon]:hidden">
-          © {new Date().getFullYear()} {DEFAULT_BRAND_NAME}. Inc
+          © {CURRENT_YEAR} {DEFAULT_BRAND_NAME}. Inc
         </p>
       </SidebarFooter>
     </Sidebar>

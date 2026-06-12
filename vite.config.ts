@@ -12,4 +12,44 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules[\\/]react(-dom|-router)?/,
+              priority: 30,
+            },
+            {
+              name: "data-vendor",
+              test: /node_modules[\\/](@tanstack|axios|zod|zustand)/,
+              priority: 25,
+            },
+            {
+              name: "ui-vendor",
+              test: /node_modules[\\/](radix-ui|@base-ui|react-day-picker|sonner)/,
+              priority: 20,
+            },
+            {
+              name: "icons-vendor",
+              test: /node_modules[\\/]lucide-react/,
+              priority: 15,
+            },
+            {
+              name: "date-vendor",
+              test: /node_modules[\\/]date-fns/,
+              priority: 15,
+            },
+            {
+              name: "vendor",
+              test: /node_modules/,
+              priority: 10,
+            },
+          ],
+        },
+      },
+    },
+  },
 });

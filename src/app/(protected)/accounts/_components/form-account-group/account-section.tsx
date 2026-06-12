@@ -43,6 +43,18 @@ function AccountSection({
   const isOptionsLoading =
     isAccountTypesPending || isCurrenciesPending || isTimezonesPending || isBrokersPending;
 
+  const toggleArchiveAt = async (index: number) => {
+    try {
+      await onToggleArchive?.(index);
+    } catch {
+      // Error toast handled in hook
+    }
+  };
+
+  const handleToggleArchiveClick = (index: number) => {
+    void toggleArchiveAt(index);
+  };
+
   return (
     <FieldSet className="gap-4" disabled={disabled}>
       <form.Field mode="array" name="accounts">
@@ -101,15 +113,7 @@ function AccountSection({
                         {mode === "edit" && account.id ? (
                           <Button
                             disabled={disabled}
-                            onClick={() => {
-                              void (async () => {
-                                try {
-                                  await onToggleArchive?.(index);
-                                } catch {
-                                  // Error toast handled in hook
-                                }
-                              })();
-                            }}
+                            onClick={() => handleToggleArchiveClick(index)}
                             size="sm"
                             type="button"
                             variant="outline"
