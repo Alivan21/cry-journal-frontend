@@ -180,7 +180,7 @@ function TimeWheelColumn({
   const scrollTimeoutRef = React.useRef<number | null>(null);
   const isUserScrollingRef = React.useRef(false);
   const isKeyboardInteractionRef = React.useRef(false);
-  const optionRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const optionRef = React.useRef<(HTMLButtonElement | null)[]>([]);
   const prevOpenRef = React.useRef(open);
 
   const selectedIndex = React.useMemo(() => {
@@ -234,7 +234,7 @@ function TimeWheelColumn({
       return;
     }
 
-    const node = optionRefs.current[selectedIndex];
+    const node = optionRef.current[selectedIndex];
     if (!node) {
       return;
     }
@@ -307,7 +307,7 @@ function TimeWheelColumn({
 
       // Re-focus the newly selected button so the next key press lands here
       window.requestAnimationFrame(() => {
-        optionRefs.current[nextIndex]?.focus({ preventScroll: true });
+        optionRef.current[nextIndex]?.focus({ preventScroll: true });
         isKeyboardInteractionRef.current = false;
       });
     },
@@ -347,7 +347,7 @@ function TimeWheelColumn({
                   key={String(option.value)}
                   onClick={() => onValueChange(option.value)}
                   ref={(el) => {
-                    optionRefs.current[index] = el;
+                    optionRef.current[index] = el;
                   }}
                   role="option"
                   tabIndex={isSelected ? 0 : -1}

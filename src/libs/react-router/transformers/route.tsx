@@ -48,6 +48,8 @@ export function manifestToRootRoute(root: ManifestNode): RouteObject {
   if (root.layout) {
     rootRoute.lazy = createLazy(root.layout);
     rootRoute.HydrateFallback = loadingFallback;
+  } else if (root.loading) {
+    rootRoute.HydrateFallback = loadingFallback;
   }
 
   if (root.error) {

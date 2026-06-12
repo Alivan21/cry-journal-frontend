@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { ThemeProvider } from "./components/providers/theme-provider.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
-import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import { createRoutesFromFiles } from "./libs/react-router/index.ts";
 import { queryClient } from "./libs/tanstack-query/query-client.ts";
 import "./index.css";
@@ -24,10 +23,8 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <TooltipProvider>
-          <RouterProvider router={router} />
-          <Toaster />
-        </TooltipProvider>
+        <RouterProvider router={router} />
+        <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>
