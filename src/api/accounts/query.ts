@@ -1,5 +1,6 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import type { UpsertAccountRequest } from "./type";
+import { accountGroupQueries } from "../account-groups/query";
 import {
   archiveAccount,
   bulkCreateAccounts,
@@ -51,13 +52,13 @@ const accountQueries = {
     }),
 };
 
-const invalidateRelatedQueries = [accountQueries.all(), ["account-groups"]];
+const getInvalidateRelatedQueries = () => [accountQueries.all(), accountGroupQueries.all()];
 
 const useCreateAccountMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest) => createAccount(payload),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -66,7 +67,7 @@ const useBulkCreateAccountsMutation = () => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest[]) => bulkCreateAccounts(payload),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -75,7 +76,7 @@ const useUpdateAccountMutation = (id: string) => {
   return useMutation({
     mutationFn: (payload: UpsertAccountRequest) => updateAccount(id, payload),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -84,7 +85,7 @@ const useBulkUpdateAccountsMutation = () => {
   return useMutation({
     mutationFn: (payload: (UpsertAccountRequest & { id: string })[]) => bulkUpdateAccounts(payload),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -93,7 +94,7 @@ const useArchiveAccountMutation = () => {
   return useMutation({
     mutationFn: (id: string) => archiveAccount(id),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -102,7 +103,7 @@ const useRestoreAccountMutation = () => {
   return useMutation({
     mutationFn: (id: string) => restoreAccount(id),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };

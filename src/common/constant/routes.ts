@@ -14,8 +14,6 @@ export const ROUTES = {
       EDIT_ACCOUNT: (groupId: string, accountId: string) =>
         `/accounts/${groupId}/${accountId}/edit`,
     },
-    USERS: "/users",
     SETTINGS: "/settings",
-    PROFILE: "/profile",
   },
 };

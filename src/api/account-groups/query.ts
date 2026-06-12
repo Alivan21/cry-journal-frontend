@@ -1,6 +1,7 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/libs/tanstack-query/query-client";
 import type { UpsertAccountGroupRequest } from "./type";
+import { accountQueries } from "../accounts/query";
 import { createAccountGroup, getAccountGroups, getAccountGroup, updateAccountGroup } from "./route";
 
 const accountGroupQueries = {
@@ -18,7 +19,7 @@ const accountGroupQueries = {
     }),
 };
 
-const invalidateRelatedQueries = [accountGroupQueries.all(), ["accounts"]];
+const getInvalidateRelatedQueries = () => [accountGroupQueries.all(), accountQueries.all()];
 
 const useCreateAccountGroupMutation = () => {
   return useMutation({
@@ -30,7 +31,7 @@ const useCreateAccountGroupMutation = () => {
       });
     },
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
@@ -39,7 +40,7 @@ const useUpdateAccountGroupMutation = (id: string) => {
   return useMutation({
     mutationFn: (payload: UpsertAccountGroupRequest) => updateAccountGroup(id, payload),
     meta: {
-      invalidates: invalidateRelatedQueries,
+      invalidates: getInvalidateRelatedQueries(),
     },
   });
 };
